@@ -39,6 +39,8 @@ Async indexing uses Redis queues; PostgreSQL is the system of record. Staging an
 
 ## Local development
 
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, commit conventions, and PR expectations.
+
 ```bash
 # Install dependencies
 pnpm install
