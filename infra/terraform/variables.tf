@@ -15,3 +15,9 @@ variable "redis_node_type" {
   type        = string
   default     = "cache.t4g.micro"
 }
+
+variable "api_certificate_arn" {
+  description = "ACM certificate ARN for API HTTPS listener"
+  type        = string
+  default     = ""
+}
