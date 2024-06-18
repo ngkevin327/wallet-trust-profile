@@ -42,6 +42,10 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Generate Prisma client
+        working-directory: apps/api
+        run: pnpm exec prisma generate
+
       - name: Build
         run: pnpm build
         continue-on-error: true
