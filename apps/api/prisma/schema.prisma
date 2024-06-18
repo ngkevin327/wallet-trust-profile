@@ -6,3 +6,53 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum ProfileVisibility {
+  public
+  private
+}
+
+enum SubscriptionTier {
+  free
+  premium
+}
+
+model User {
+  id                String           @id @default(uuid()) @db.Uuid
+  createdAt         DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  email             String?          @db.VarChar(255)
+  subscriptionTier  SubscriptionTier @default(free) @map("subscription_tier")
+
+  wallets  Wallet[]
+  profile  Profile?
+
+  @@map("users")
+}
+
+model Wallet {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  address    String   @db.VarChar(42)
+  chainScope String[] @map("chain_scope")
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  linkedAt   DateTime @default(now()) @map("linked_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([address, chainScope])
+  @@index([userId])
+  @@map("wallets")
+}
+
+model Profile {
+  id                  String            @id @default(uuid()) @db.Uuid
+  userId              String            @unique @map("user_id") @db.Uuid
+  slug                String            @unique @db.VarChar(64)
+  displayName         String?           @map("display_name") @db.VarChar(128)
+  visibility          ProfileVisibility @default(public)
+  publicCacheVersion  Int               @default(0) @map("public_cache_version")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
