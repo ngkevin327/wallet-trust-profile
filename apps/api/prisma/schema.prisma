@@ -29,6 +29,13 @@ model User {
   @@map("users")
 }
 
+enum IndexRunStatus {
+  pending
+  running
+  completed
+  failed
+}
+
 model Wallet {
   id         String   @id @default(uuid()) @db.Uuid
   userId     String   @map("user_id") @db.Uuid
@@ -37,11 +44,51 @@ model Wallet {
   isPrimary  Boolean  @default(false) @map("is_primary")
   linkedAt   DateTime @default(now()) @map("linked_at") @db.Timestamptz
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  indexRuns         IndexRun[]
+  transactionFacts  TransactionFact[]
 
   @@unique([address, chainScope])
   @@index([userId])
   @@map("wallets")
+}
+
+model IndexRun {
+  id          String         @id @default(uuid()) @db.Uuid
+  walletId    String         @map("wallet_id") @db.Uuid
+  status      IndexRunStatus @default(pending)
+  fromBlock   BigInt?        @map("from_block")
+  toBlock     BigInt?        @map("to_block")
+  startedAt   DateTime?      @map("started_at") @db.Timestamptz
+  completedAt DateTime?      @map("completed_at") @db.Timestamptz
+  error       String?        @db.Text
+
+  wallet           Wallet            @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  transactionFacts TransactionFact[]
+  scoreSnapshots   ScoreSnapshot[]
+
+  @@index([walletId, status])
+  @@map("index_runs")
+}
+
+model TransactionFact {
+  id         String    @id @default(uuid()) @db.Uuid
+  walletId   String    @map("wallet_id") @db.Uuid
+  indexRunId String?   @map("index_run_id") @db.Uuid
+  chainId    Int       @map("chain_id")
+  txHash     String    @map("tx_hash") @db.VarChar(66)
+  logIndex   Int?      @map("log_index")
+  blockTime  DateTime  @map("block_time") @db.Timestamptz
+  category   String    @db.VarChar(64)
+  protocolId String?   @map("protocol_id") @db.Uuid
+  raw        Json      @db.JsonB
+
+  wallet   Wallet    @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  indexRun IndexRun? @relation(fields: [indexRunId], references: [id], onDelete: SetNull)
+
+  @@unique([chainId, txHash, logIndex])
+  @@index([walletId, blockTime(sort: Desc)])
+  @@map("transaction_facts")
 }
 
 model Profile {
