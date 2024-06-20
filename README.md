@@ -51,6 +51,10 @@ docker compose up -d
 # Copy environment templates
 cp .env.example .env
 
+# Apply database migrations and seed demo data
+pnpm --filter @onchain-reputation/api db:migrate
+pnpm --filter @onchain-reputation/api db:seed
+
 # Run all apps in development mode
 pnpm dev
 ```
