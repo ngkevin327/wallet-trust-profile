@@ -47,6 +47,8 @@ model Wallet {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   indexRuns         IndexRun[]
   transactionFacts  TransactionFact[]
+  scoreSnapshots    ScoreSnapshot[]
+  badgeAwards       BadgeAward[]
 
   @@unique([address, chainScope])
   @@index([userId])
@@ -89,6 +91,36 @@ model TransactionFact {
   @@unique([chainId, txHash, logIndex])
   @@index([walletId, blockTime(sort: Desc)])
   @@map("transaction_facts")
+}
+
+model ScoreSnapshot {
+  id              String   @id @default(uuid()) @db.Uuid
+  walletId        String   @map("wallet_id") @db.Uuid
+  indexRunId      String   @map("index_run_id") @db.Uuid
+  scoringVersion  String   @map("scoring_version") @db.VarChar(32)
+  reputationIndex Int      @map("reputation_index")
+  dimensions      Json     @db.JsonB
+  inputsHash      String   @map("inputs_hash") @db.VarChar(64)
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  wallet   Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  indexRun IndexRun @relation(fields: [indexRunId], references: [id], onDelete: Cascade)
+
+  @@index([walletId, createdAt(sort: Desc)])
+  @@map("score_snapshots")
+}
+
+model BadgeAward {
+  id        String    @id @default(uuid()) @db.Uuid
+  walletId  String    @map("wallet_id") @db.Uuid
+  badgeCode String    @map("badge_code") @db.VarChar(64)
+  earnedAt  DateTime  @default(now()) @map("earned_at") @db.Timestamptz
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@unique([walletId, badgeCode])
+  @@map("badge_awards")
 }
 
 model Profile {
