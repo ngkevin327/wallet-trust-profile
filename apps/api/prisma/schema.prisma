@@ -123,6 +123,53 @@ model BadgeAward {
   @@map("badge_awards")
 }
 
+model Protocol {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.VarChar(64)
+  name        String   @db.VarChar(128)
+  chainId     Int      @map("chain_id")
+  contract    String?  @db.VarChar(42)
+  category    String   @db.VarChar(64)
+  metadata    Json?    @db.JsonB
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([chainId, category])
+  @@map("protocols")
+}
+
+model Dao {
+  id           String   @id @default(uuid()) @db.Uuid
+  slug         String   @unique @db.VarChar(64)
+  name         String   @db.VarChar(128)
+  treasury     String?  @db.VarChar(42)
+  tokenAddress String?  @map("token_address") @db.VarChar(42)
+  chainId      Int      @map("chain_id")
+  metadata     Json?    @db.JsonB
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("daos")
+}
+
+enum RiskLabelSeverity {
+  low
+  medium
+  high
+}
+
+model RiskLabel {
+  id          String            @id @default(uuid()) @db.Uuid
+  code        String            @unique @db.VarChar(64)
+  title       String            @db.VarChar(128)
+  description String            @db.Text
+  severity    RiskLabelSeverity @default(medium)
+  active      Boolean           @default(true)
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("risk_labels")
+}
+
 model Profile {
   id                  String            @id @default(uuid()) @db.Uuid
   userId              String            @unique @map("user_id") @db.Uuid
