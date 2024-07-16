@@ -11,6 +11,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",
     "typecheck": "pnpm -r run typecheck",
+    "openapi:generate": "pnpm --filter @onchain-reputation/api openapi:export",
     "prepare": "husky"
   },
   "devDependencies": {

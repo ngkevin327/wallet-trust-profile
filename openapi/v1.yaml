@@ -1,0 +1,183 @@
+openapi: 3.0.3
+info:
+  title: Onchain Reputation API
+  description: REST API for wallet reputation profiles, indexing, and exports.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001/v1
+    description: Local development
+  - url: https://api.staging.onchain-reputation.example/v1
+    description: Staging
+
+tags:
+  - name: health
+    description: Liveness and readiness probes
+  - name: auth
+    description: Wallet sign-in (SIWE)
+  - name: profiles
+    description: Public and owner profile endpoints
+
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: Liveness check
+      responses:
+        "200":
+          description: Service is running
+
+  /ready:
+    get:
+      tags: [health]
+      summary: Readiness check
+      responses:
+        "200":
+          description: Service is ready
+
+  /auth/nonce:
+    post:
+      tags: [auth]
+      summary: Issue SIWE nonce
+      responses:
+        "201":
+          description: Nonce issued
+
+  /auth/verify:
+    post:
+      tags: [auth]
+      summary: Verify wallet signature and issue JWT
+      responses:
+        "200":
+          description: Authenticated
+
+  /me/profile:
+    get:
+      tags: [profiles]
+      summary: Get owner profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Owner profile with private fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOwner"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /profiles/{slug}:
+    get:
+      tags: [profiles]
+      summary: Get public profile by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfilePublic"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      required: [statusCode, code, message, timestamp, path]
+      properties:
+        statusCode:
+          type: integer
+        code:
+          type: string
+        message:
+          type: string
+        requestId:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        address:
+          type: string
+        chainScope:
+          type: array
+          items:
+            type: string
+        isPrimary:
+          type: boolean
+        linkedAt:
+          type: string
+          format: date-time
+
+    ProfilePublic:
+      type: object
+      properties:
+        slug:
+          type: string
+        displayName:
+          type: string
+          nullable: true
+        visibility:
+          type: string
+          enum: [public, private]
+        reputationIndex:
+          type: integer
+          nullable: true
+        dimensions:
+          type: object
+          nullable: true
+        badges:
+          type: array
+          items:
+            type: string
+        lastUpdated:
+          type: string
+          format: date-time
+          nullable: true
+
+    ProfileOwner:
+      allOf:
+        - $ref: "#/components/schemas/ProfilePublic"
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            userId:
+              type: string
+              format: uuid
+            publicCacheVersion:
+              type: integer
+            wallets:
+              type: array
+              items:
+                $ref: "#/components/schemas/Wallet"
