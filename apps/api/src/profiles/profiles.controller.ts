@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { RateLimitGuard } from "../common/guards/rate-limit.guard";
 import { ProfilesService } from "./profiles.service";
 
 @ApiTags("profiles")
@@ -16,6 +17,7 @@ export class MeProfileController {
 
 @ApiTags("profiles")
 @Controller("profiles")
+@UseGuards(RateLimitGuard)
 export class ProfilesController {
   constructor(private readonly profilesService: ProfilesService) {}
 

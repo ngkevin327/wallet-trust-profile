@@ -6,7 +6,7 @@ type LogPayload = Record<string, unknown>;
 
 @Injectable()
 export class JsonLoggerService implements NestLoggerService {
-  private log(level: LogLevel, message: string, context?: string, meta?: LogPayload) {
+  private write(level: LogLevel, message: string, context?: string, meta?: LogPayload) {
     const entry = {
       level,
       message,
@@ -25,7 +25,7 @@ export class JsonLoggerService implements NestLoggerService {
   }
 
   logRequest(requestId: string, method: string, path: string, statusCode: number, durationMs: number) {
-    this.log("info", "request completed", "HTTP", {
+    this.write("info", "request completed", "HTTP", {
       requestId,
       method,
       path,
@@ -35,22 +35,22 @@ export class JsonLoggerService implements NestLoggerService {
   }
 
   log(message: string, context?: string) {
-    this.log("info", message, context);
+    this.write("info", message, context);
   }
 
   error(message: string, trace?: string, context?: string) {
-    this.log("error", message, context, trace ? { trace } : undefined);
+    this.write("error", message, context, trace ? { trace } : undefined);
   }
 
   warn(message: string, context?: string) {
-    this.log("warn", message, context);
+    this.write("warn", message, context);
   }
 
   debug(message: string, context?: string) {
-    this.log("debug", message, context);
+    this.write("debug", message, context);
   }
 
   verbose(message: string, context?: string) {
-    this.log("debug", message, context);
+    this.write("debug", message, context);
   }
 }
