@@ -73,7 +73,8 @@ Keep subjects under 72 characters. Put additional context in the PR description,
 
 - Unit tests live next to source (`*.spec.ts`).
 - Run `pnpm test` from the repository root before pushing.
-- Integration tests may require Docker services; see package READMEs under `apps/`.
+- API e2e tests (`apps/api/test/*.e2e-spec.ts`) expect Postgres and Redis via `docker compose up -d`.
+- Reset local DB between e2e runs: `pnpm --filter @onchain-reputation/api db:migrate && db:seed`.
 
 ## Questions
 
