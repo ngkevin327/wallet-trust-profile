@@ -10,7 +10,7 @@ import { SiweService } from "./siwe.service";
 @Module({
   imports: [UsersModule, WalletsModule, ProfilesModule],
   controllers: [AuthController],
-  providers: [SiweService, AuthService, JwtService],
-  exports: [SiweService, AuthService, JwtService],
+  providers: [SiweService, AuthService, JwtService, JwtAuthGuard],
+  exports: [SiweService, AuthService, JwtService, JwtAuthGuard],
 })
 export class AuthModule {}
