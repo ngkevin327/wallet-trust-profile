@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, HttpCode, Post } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { NonceRequestDto } from "./dto/nonce.dto";
@@ -14,6 +14,7 @@ export class AuthController {
   ) {}
 
   @Post("nonce")
+  @HttpCode(201)
   @ApiOperation({ summary: "Issue a single-use SIWE nonce" })
   async issueNonce(@Body() body: NonceRequestDto) {
     return this.siwe.issueNonce(body.address, body.chainId);
