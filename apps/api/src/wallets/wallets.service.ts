@@ -82,4 +82,28 @@ export class WalletsService {
 
     return this.wallets.linkToUser(userId, dto.address, chainScope, isPrimary);
   }
+
+  async unlinkWallet(userId: string, walletId: string) {
+    const wallet = await this.wallets.findById(walletId);
+    if (!wallet || wallet.userId !== userId) {
+      throw new NotFoundException("Wallet not found");
+    }
+
+    const all = await this.wallets.listByUserId(userId);
+    if (all.length <= 1) {
+      throw new BadRequestException(
+        "Cannot remove your only wallet. Contact support to close your account.",
+      );
+    }
+
+    const wasPrimary = wallet.isPrimary;
+    await this.wallets.delete(walletId);
+
+    if (wasPrimary) {
+      const remaining = await this.wallets.listByUserId(userId);
+      if (remaining[0]) {
+        await this.wallets.setPrimary(remaining[0].id, userId);
+      }
+    }
+  }
 }

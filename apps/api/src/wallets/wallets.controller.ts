@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -23,5 +23,11 @@ export class WalletsController {
   @ApiOperation({ summary: "Link a wallet with SIWE signature" })
   link(@CurrentUser() user: JwtPayload, @Body() body: LinkWalletDto) {
     return this.walletsService.linkWallet(user.sub, body);
+  }
+
+  @Delete(":id")
+  @ApiOperation({ summary: "Unlink a wallet" })
+  unlink(@CurrentUser() user: JwtPayload, @Param("id") walletId: string) {
+    return this.walletsService.unlinkWallet(user.sub, walletId);
   }
 }

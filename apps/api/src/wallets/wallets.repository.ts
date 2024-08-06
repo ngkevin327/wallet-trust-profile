@@ -66,4 +66,19 @@ export class WalletsRepository {
       user: { connect: { id: userId } },
     });
   }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.wallet.delete({ where: { id } });
+  }
+
+  async setPrimary(walletId: string, userId: string): Promise<Wallet> {
+    await this.prisma.wallet.updateMany({
+      where: { userId },
+      data: { isPrimary: false },
+    });
+    return this.prisma.wallet.update({
+      where: { id: walletId },
+      data: { isPrimary: true },
+    });
+  }
 }
