@@ -1,5 +1,6 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Prisma, Wallet } from "@prisma/client";
+import { WalletConflictError } from "../common/errors/wallet-conflict.error";
 import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
@@ -39,7 +40,9 @@ export class WalletsRepository {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
-        throw new ConflictException("Wallet is already linked to another account");
+        const address =
+          typeof data.address === "string" ? data.address : String(data.address ?? "unknown");
+        throw new WalletConflictError(address);
       }
       throw error;
     }
@@ -53,7 +56,7 @@ export class WalletsRepository {
   ): Promise<Wallet> {
     const existing = await this.findByAddress(address, chainScope);
     if (existing && existing.userId !== userId) {
-      throw new ConflictException("Wallet is already linked to another account");
+      throw new WalletConflictError(address);
     }
     if (existing) {
       return existing;

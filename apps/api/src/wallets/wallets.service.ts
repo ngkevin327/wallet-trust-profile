@@ -6,8 +6,10 @@ import {
 } from "@nestjs/common";
 import { SubscriptionTier } from "@prisma/client";
 import { SiweMessage } from "siwe";
-import { UsersRepository } from "../users/users.repository";
+import { WalletConflictError } from "../common/errors/wallet-conflict.error";
+import { JsonLoggerService } from "../common/logger/logger.service";
 import { SiweService } from "../auth/siwe.service";
+import { UsersRepository } from "../users/users.repository";
 import { WalletsRepository } from "./wallets.repository";
 
 const FREE_WALLET_LIMIT = 1;
@@ -18,6 +20,7 @@ export class WalletsService {
     private readonly wallets: WalletsRepository,
     private readonly users: UsersRepository,
     private readonly siwe: SiweService,
+    private readonly logger: JsonLoggerService,
   ) {}
 
   private async verifyWalletSignature(message: string, signature: string, expectedAddress: string) {
@@ -80,7 +83,18 @@ export class WalletsService {
     const hasPrimary = user.wallets.some((w) => w.isPrimary);
     const isPrimary = dto.isPrimary ?? !hasPrimary;
 
-    return this.wallets.linkToUser(userId, dto.address, chainScope, isPrimary);
+    try {
+      return await this.wallets.linkToUser(userId, dto.address, chainScope, isPrimary);
+    } catch (error) {
+      if (error instanceof WalletConflictError) {
+        this.logger.warn("Wallet link conflict", "WalletsService", {
+          userId,
+          address: dto.address.toLowerCase(),
+          event: "wallet_link_conflict",
+        });
+      }
+      throw error;
+    }
   }
 
   async unlinkWallet(userId: string, walletId: string) {

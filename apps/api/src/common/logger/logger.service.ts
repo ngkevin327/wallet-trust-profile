@@ -42,8 +42,8 @@ export class JsonLoggerService implements NestLoggerService {
     this.write("error", message, context, trace ? { trace } : undefined);
   }
 
-  warn(message: string, context?: string) {
-    this.write("warn", message, context);
+  warn(message: string, context?: string, meta?: LogPayload) {
+    this.write("warn", message, context, meta);
   }
 
   debug(message: string, context?: string) {
