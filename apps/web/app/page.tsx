@@ -1,3 +1,5 @@
+import { ConnectWalletButton } from "../components/connect-wallet-button";
+
 export default function HomePage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
@@ -11,13 +13,8 @@ export default function HomePage() {
         Connect your wallet to generate a shareable reputation profile — governance
         participation, DAO contributions, and payment reliability in one place.
       </p>
-      <div className="mt-10 flex gap-4">
-        <button
-          type="button"
-          className="rounded-lg bg-brand-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-500"
-        >
-          Connect wallet
-        </button>
+      <div className="mt-10 flex flex-wrap items-center gap-4">
+        <ConnectWalletButton />
         <a
           href="#how-it-works"
           className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-white"
