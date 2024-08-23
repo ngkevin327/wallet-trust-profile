@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ProfileVisibility } from "@prisma/client";
 import { SiweMessage } from "siwe";
+import { ProfilesService } from "../profiles/profiles.service";
 import { ProfilesRepository } from "../profiles/profiles.repository";
 import { UsersRepository } from "../users/users.repository";
 import { WalletsRepository } from "../wallets/wallets.repository";
@@ -15,6 +16,7 @@ export class AuthService {
     private readonly users: UsersRepository,
     private readonly wallets: WalletsRepository,
     private readonly profiles: ProfilesRepository,
+    private readonly profilesService: ProfilesService,
   ) {}
 
   async verifySignature(message: string, signature: string) {
@@ -64,6 +66,8 @@ export class AuthService {
         displayName: null,
         visibility: ProfileVisibility.public,
       });
+
+      await this.profilesService.enqueueIndexForWallet(wallet.id, userId, chainId);
     }
 
     const { token, expiresIn } = await this.jwt.signAccessToken({

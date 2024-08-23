@@ -1,5 +1,7 @@
 export type ProfileVisibilityDto = "public" | "private";
 
+export type ProfileStatusDto = "created" | "indexing" | "active" | "failed";
+
 export type ProfileScoreDimensionsDto = {
   governance: number;
   contribution: number;
@@ -11,6 +13,7 @@ export type ProfilePublicDto = {
   slug: string;
   displayName: string | null;
   visibility: ProfileVisibilityDto;
+  status: ProfileStatusDto;
   reputationIndex: number | null;
   dimensions: ProfileScoreDimensionsDto | null;
   badges: string[];

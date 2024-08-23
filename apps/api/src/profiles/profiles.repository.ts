@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { Prisma, Profile, ProfileVisibility } from "@prisma/client";
+import { Prisma, Profile, ProfileStatus, ProfileVisibility } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 
 const RESERVED_SLUGS = new Set([
@@ -96,6 +96,13 @@ export class ProfilesRepository {
     return this.prisma.profile.update({
       where: { id },
       data: { publicCacheVersion: { increment: 1 } },
+    });
+  }
+
+  setStatus(userId: string, status: ProfileStatus): Promise<Profile> {
+    return this.prisma.profile.update({
+      where: { userId },
+      data: { status },
     });
   }
 }

@@ -12,6 +12,13 @@ enum ProfileVisibility {
   private
 }
 
+enum ProfileStatus {
+  created
+  indexing
+  active
+  failed
+}
+
 enum SubscriptionTier {
   free
   premium
@@ -176,6 +183,7 @@ model Profile {
   slug                String            @unique @db.VarChar(64)
   displayName         String?           @map("display_name") @db.VarChar(128)
   visibility          ProfileVisibility @default(public)
+  status              ProfileStatus     @default(created)
   publicCacheVersion  Int               @default(0) @map("public_cache_version")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

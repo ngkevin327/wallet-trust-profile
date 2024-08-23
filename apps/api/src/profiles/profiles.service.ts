@@ -1,12 +1,17 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { ProfileStatus } from "@prisma/client";
 import type { ProfileOwnerDto, ProfilePublicDto } from "@onchain-reputation/shared";
+import { IndexerQueue } from "../indexer/indexer.queue";
 import { ProfilesRepository } from "./profiles.repository";
 
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly profiles: ProfilesRepository) {}
+  constructor(
+    private readonly profiles: ProfilesRepository,
+    private readonly indexerQueue: IndexerQueue,
+  ) {}
 
   isMockMode(): boolean {
     return process.env.API_MOCK_MODE === "true" || process.env.NODE_ENV === "development";
@@ -34,6 +39,7 @@ export class ProfilesService {
       slug: full.slug,
       displayName: full.displayName,
       visibility: full.visibility,
+      status: full.status,
       publicCacheVersion: full.publicCacheVersion,
       reputationIndex: null,
       dimensions: null,
@@ -62,6 +68,7 @@ export class ProfilesService {
       slug: profile.slug,
       displayName: profile.displayName,
       visibility: profile.visibility,
+      status: profile.status,
       reputationIndex: null,
       dimensions: null,
       badges: [],
@@ -76,6 +83,7 @@ export class ProfilesService {
       slug: "demo-builder",
       displayName: "Demo Builder",
       visibility: "public",
+      status: "indexing",
       publicCacheVersion: 1,
       reputationIndex: 72,
       dimensions: {
@@ -95,5 +103,10 @@ export class ProfilesService {
         },
       ],
     };
+  }
+
+  async enqueueIndexForWallet(walletId: string, userId: string, chainId: number) {
+    await this.profiles.setStatus(userId, ProfileStatus.indexing);
+    await this.indexerQueue.enqueue({ walletId, userId, chainId });
   }
 }

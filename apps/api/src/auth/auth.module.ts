@@ -1,4 +1,5 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
+import { IndexerModule } from "../indexer/indexer.module";
 import { ProfilesModule } from "../profiles/profiles.module";
 import { UsersModule } from "../users/users.module";
 import { WalletsModule } from "../wallets/wallets.module";
@@ -8,7 +9,7 @@ import { JwtService } from "./jwt.service";
 import { SiweService } from "./siwe.service";
 
 @Module({
-  imports: [UsersModule, WalletsModule, ProfilesModule],
+  imports: [UsersModule, WalletsModule, forwardRef(() => ProfilesModule), IndexerModule],
   controllers: [AuthController],
   providers: [SiweService, AuthService, JwtService, JwtAuthGuard],
   exports: [SiweService, AuthService, JwtService, JwtAuthGuard],
