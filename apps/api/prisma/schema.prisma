@@ -56,6 +56,7 @@ model Wallet {
   transactionFacts  TransactionFact[]
   scoreSnapshots    ScoreSnapshot[]
   badgeAwards       BadgeAward[]
+  chainIndexState   WalletChainIndex[]
 
   @@unique([address, chainScope])
   @@index([userId])
@@ -175,6 +176,19 @@ model RiskLabel {
   createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz
 
   @@map("risk_labels")
+}
+
+model WalletChainIndex {
+  id                String   @id @default(uuid()) @db.Uuid
+  walletId          String   @map("wallet_id") @db.Uuid
+  chainId           Int      @map("chain_id")
+  lastIndexedBlock  BigInt   @map("last_indexed_block")
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@unique([walletId, chainId])
+  @@map("wallet_chain_index")
 }
 
 model Profile {
