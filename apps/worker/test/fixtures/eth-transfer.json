@@ -1,0 +1,16 @@
+{
+  "transfers": [
+    {
+      "hash": "0xabc123def4567890123456789012345678901234567890123456789012345678",
+      "blockNum": "0x12a05f2",
+      "from": "0x742d35cc6634c0532925a3b844bc9e7595f0beb0",
+      "to": "0xde0b295669a9fd93d5f285d675a15f04fdc1afda",
+      "value": 1.5,
+      "asset": "ETH",
+      "category": "external",
+      "metadata": {
+        "blockTimestamp": "2024-06-15T10:30:00Z"
+      }
+    }
+  ]
+}
