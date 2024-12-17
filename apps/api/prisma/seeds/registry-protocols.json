@@ -1,0 +1,22 @@
+[
+  { "slug": "uniswap-v3", "name": "Uniswap V3", "chainId": 1, "contract": "0xE592427A0AEce92De3Edee1F18E0157C05861564", "category": "defi" },
+  { "slug": "aave-v3", "name": "Aave V3", "chainId": 1, "contract": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2", "category": "defi" },
+  { "slug": "compound-v3", "name": "Compound V3", "chainId": 1, "contract": "0xc3d688B667034DDeAc782bB59f83E8C8506Fd758", "category": "defi" },
+  { "slug": "lido-steth", "name": "Lido stETH", "chainId": 1, "contract": "0xae7ab96520DE3A18E5e111B645EaC990173d792F", "category": "defi" },
+  { "slug": "opensea-seaport", "name": "OpenSea Seaport", "chainId": 1, "contract": "0x0000000000000068F116a894984e2D0D6d412BE6", "category": "nft" },
+  { "slug": "snapshot-voting", "name": "Snapshot Voting", "chainId": 1, "contract": "0x0000000000000000000000000000000000000000", "category": "governance" },
+  { "slug": "safe-multisig", "name": "Safe Multisig", "chainId": 1, "contract": "0x41675C099F32341bf841BF263F4355BC454B2494", "category": "governance" },
+  { "slug": "ens-registrar", "name": "ENS Registrar", "chainId": 1, "contract": "0x283Af0B44c8B1C0007524DcB7FF0E7CAD86664B5", "category": "identity" },
+  { "slug": "gitcoin-grants", "name": "Gitcoin Grants", "chainId": 1, "contract": "0xde0b295669a9fd93d5f285d675a15f04fdc1afda", "category": "public_goods" },
+  { "slug": "blur-marketplace", "name": "Blur Marketplace", "chainId": 1, "contract": "0x000000000000Ad05Ccc4F10045630fb830B91927", "category": "nft" },
+  { "slug": "1inch-router", "name": "1inch Router", "chainId": 1, "contract": "0x1111111254EEB25477B68fb85Ed929f73A960582", "category": "defi" },
+  { "slug": "curve-pool", "name": "Curve Pool", "chainId": 1, "contract": "0xD533a949740bb3306d119CC777fa900bA034cd52", "category": "defi" },
+  { "slug": "balancer-vault", "name": "Balancer Vault", "chainId": 1, "contract": "0xBA12222222228d8Ba445958a75a0704d566BF2C8", "category": "defi" },
+  { "slug": "rocket-pool", "name": "Rocket Pool", "chainId": 1, "contract": "0xae78736Cd615f374D3085123A210448E74Fc6393", "category": "defi" },
+  { "slug": "eigenlayer", "name": "EigenLayer", "chainId": 1, "contract": "0x39053d51B77dc0d4e4b8e37d81b0b0eDf4a40CfA", "category": "defi" },
+  { "slug": "aerodrome-base", "name": "Aerodrome", "chainId": 8453, "contract": "0x420DD381b31aEf6680db96bA6F1207fA501DD7C6", "category": "defi" },
+  { "slug": "baseswap", "name": "BaseSwap", "chainId": 8453, "contract": "0xFDa619b6d20975Be80A10332cD39b9a4b0E78F6", "category": "defi" },
+  { "slug": "moonwell-base", "name": "Moonwell", "chainId": 8453, "contract": "0x3bFc20f0B9bafcED99CffD6B397D53316a6317D0", "category": "defi" },
+  { "slug": "seamless-base", "name": "Seamless Protocol", "chainId": 8453, "contract": "0xBCfe554d98fc33E413b4E037A9DBe30f091435b0", "category": "defi" },
+  { "slug": "uniswap-base", "name": "Uniswap Base", "chainId": 8453, "contract": "0x2626664c2603336E57A767cA960e953aB36E5Ff1", "category": "defi" }
+]
