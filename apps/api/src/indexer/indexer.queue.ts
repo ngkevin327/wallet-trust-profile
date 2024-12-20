@@ -7,6 +7,8 @@ export type IndexJobPayload = {
   walletId: string;
   userId: string;
   chainId: number;
+  indexRunId?: string;
+  attempt?: number;
 };
 
 @Injectable()
@@ -25,16 +27,22 @@ export class IndexerQueue {
   }
 
   async enqueue(payload: IndexJobPayload): Promise<string> {
-    const id = await this.getRedis().xadd(
-      STREAM_KEY,
-      "*",
+    const fields: string[] = [
       "walletId",
       payload.walletId,
       "userId",
       payload.userId,
       "chainId",
       String(payload.chainId),
-    );
+    ];
+    if (payload.indexRunId) {
+      fields.push("indexRunId", payload.indexRunId);
+    }
+    if (payload.attempt != null) {
+      fields.push("attempt", String(payload.attempt));
+    }
+
+    const id = await this.getRedis().xadd(STREAM_KEY, "*", ...fields);
     return id ?? "";
   }
 }

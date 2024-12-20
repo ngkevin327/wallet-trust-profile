@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { ProfileStatus } from "@prisma/client";
 import type { ProfileOwnerDto, ProfilePublicDto } from "@onchain-reputation/shared";
-import { IndexerQueue } from "../indexer/indexer.queue";
+import { IndexerOrchestrator } from "../indexer/indexer.orchestrator";
 import { ProfilesRepository } from "./profiles.repository";
 
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
@@ -10,7 +10,7 @@ const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
 export class ProfilesService {
   constructor(
     private readonly profiles: ProfilesRepository,
-    private readonly indexerQueue: IndexerQueue,
+    private readonly indexerOrchestrator: IndexerOrchestrator,
   ) {}
 
   isMockMode(): boolean {
@@ -107,6 +107,14 @@ export class ProfilesService {
 
   async enqueueIndexForWallet(walletId: string, userId: string, chainId: number) {
     await this.profiles.setStatus(userId, ProfileStatus.indexing);
-    await this.indexerQueue.enqueue({ walletId, userId, chainId });
+    await this.indexerOrchestrator.createRun(walletId, userId, chainId);
+  }
+
+  async triggerRefresh(userId: string, walletId: string, chainId: number, isPremium: boolean) {
+    if (!isPremium) {
+      throw new ForbiddenException("Profile refresh requires premium subscription");
+    }
+    await this.profiles.setStatus(userId, ProfileStatus.indexing);
+    return this.indexerOrchestrator.createRun(walletId, userId, chainId);
   }
 }
