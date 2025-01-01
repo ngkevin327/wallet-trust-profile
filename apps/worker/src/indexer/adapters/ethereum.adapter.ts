@@ -2,6 +2,8 @@ import { BaseIndexerAdapter, type RpcClient } from "../base-indexer.adapter";
 import type { NormalizedTransaction } from "../chain-indexer.interface";
 import { withRetry } from "../retry.util";
 
+let rateLimitPauseUntil = 0;
+
 type AlchemyAssetTransfer = {
   hash: string;
   blockNum: string;
@@ -64,11 +66,30 @@ export class EthereumIndexerAdapter extends BaseIndexerAdapter {
       [direction]: address,
     };
 
-    const response = await withRetry(() =>
-      this.rpc.request({
-        method: "alchemy_getAssetTransfers",
-        params: [params],
-      }),
+    if (Date.now() < rateLimitPauseUntil) {
+      const waitMs = rateLimitPauseUntil - Date.now();
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+    }
+
+    const response = await withRetry(
+      () =>
+        this.rpc.request({
+          method: "alchemy_getAssetTransfers",
+          params: [params],
+        }),
+      {
+        isRetryable: (error) => {
+          if (EthereumIndexerAdapter.isRateLimitError(error)) {
+            rateLimitPauseUntil = Date.now() + 5000;
+            console.warn(JSON.stringify({ event: "rpc_rate_limit", chainId: this.chainId }));
+            return true;
+          }
+          return (
+            error instanceof Error &&
+            (error.message.includes("ECONNRESET") || error.message.includes("timeout"))
+          );
+        },
+      },
     );
 
     const transfers = (response as { transfers?: AlchemyAssetTransfer[] }).transfers ?? [];
