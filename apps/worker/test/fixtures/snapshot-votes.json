@@ -1,0 +1,14 @@
+{
+  "data": {
+    "votes": [
+      {
+        "id": "vote-1",
+        "voter": "0x742d35cc6634c0532925a3b844bc9e7595f0beb0",
+        "space": { "id": "gitcoindao.eth" },
+        "proposal": { "id": "proposal-abc" },
+        "choice": 1,
+        "created": 1718452800
+      }
+    ]
+  }
+}
