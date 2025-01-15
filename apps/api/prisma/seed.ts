@@ -65,6 +65,34 @@ async function seedRegistry() {
   console.log(`Seeded ${daos.length} DAOs and ${protocols.length} protocols`);
 }
 
+async function seedTokenDenylist() {
+  const seedsDir = join(__dirname, "seeds");
+  const tokens = JSON.parse(
+    readFileSync(join(seedsDir, "token-denylist.json"), "utf8"),
+  ) as { chainId: number; contract: string; symbol: string; reason: string }[];
+
+  for (const token of tokens) {
+    await prisma.tokenDenylist.upsert({
+      where: {
+        chainId_contract: {
+          chainId: token.chainId,
+          contract: token.contract.toLowerCase(),
+        },
+      },
+      update: { symbol: token.symbol, reason: token.reason, active: true },
+      create: {
+        chainId: token.chainId,
+        contract: token.contract.toLowerCase(),
+        symbol: token.symbol,
+        reason: token.reason,
+        active: true,
+      },
+    });
+  }
+
+  console.log(`Seeded ${tokens.length} denylisted tokens`);
+}
+
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
 const DEMO_WALLET_ID = "b0000000-0000-4000-8000-000000000001";
 const DEMO_PROFILE_ID = "c0000000-0000-4000-8000-000000000001";
@@ -106,8 +134,9 @@ async function main() {
   });
 
   await seedRegistry();
+  await seedTokenDenylist();
 
-  console.log("Seed complete: demo user, wallet, profile, and registry created");
+  console.log("Seed complete: demo user, wallet, profile, registry, and denylist created");
 }
 
 main()

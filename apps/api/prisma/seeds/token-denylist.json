@@ -1,0 +1,7 @@
+[
+  { "chainId": 1, "contract": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", "symbol": "USDC-SPAM", "reason": "unsolicited_airdrop" },
+  { "chainId": 1, "contract": "0xdac17f958d2ee523a2206206994597c13d831ec7", "symbol": "USDT-SPAM", "reason": "unsolicited_airdrop" },
+  { "chainId": 1, "contract": "0x95ad61b0a2d711b0820c86c7a955c29c1c2e3e3e", "symbol": "SHIB-SPAM", "reason": "meme_spam" },
+  { "chainId": 1, "contract": "0x4d224452801aced8b4f96c90c6b8c8f8f8f8f8f8", "symbol": "APE-SPAM", "reason": "meme_spam" },
+  { "chainId": 8453, "contract": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913", "symbol": "USDC-BASE", "reason": "known_spam_variant" }
+]
