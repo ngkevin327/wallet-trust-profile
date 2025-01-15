@@ -9,6 +9,12 @@ export type ProfileScoreDimensionsDto = {
   protocolParticipation?: number;
 };
 
+export type ActivitySummaryDto = {
+  activitySummarized: boolean;
+  totalTransactions: number;
+  topProtocols: { category: string; count: number }[];
+};
+
 export type ProfilePublicDto = {
   slug: string;
   displayName: string | null;
@@ -18,6 +24,7 @@ export type ProfilePublicDto = {
   dimensions: ProfileScoreDimensionsDto | null;
   badges: string[];
   lastUpdated: string | null;
+  activitySummary?: ActivitySummaryDto | null;
 };
 
 export type ProfileOwnerDto = ProfilePublicDto & {

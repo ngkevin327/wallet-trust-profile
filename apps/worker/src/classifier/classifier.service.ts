@@ -94,6 +94,7 @@ export class ClassifierService {
         value: tx.value,
         blockNumber: tx.blockNumber.toString(),
         isContractCreation: tx.isContractCreation,
+        tokenContract: tx.contractAddress ?? undefined,
       },
     };
   }
