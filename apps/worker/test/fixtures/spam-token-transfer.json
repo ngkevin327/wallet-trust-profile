@@ -1,0 +1,11 @@
+{
+  "chainId": 1,
+  "txHash": "0xspam123",
+  "logIndex": null,
+  "blockTime": "2024-01-01T00:00:00Z",
+  "category": "transfer",
+  "protocolId": null,
+  "raw": {
+    "tokenContract": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+  }
+}
