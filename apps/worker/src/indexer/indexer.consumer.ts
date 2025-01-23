@@ -5,7 +5,6 @@ import { ClassifierService } from "../classifier/classifier.service";
 import { SpamFilter } from "../classifier/spam.filter";
 import { SnapshotClient } from "../integrations/snapshot.client";
 import { mergeGovernanceFacts } from "../classifier/governance.mapper";
-import { BaseIndexerAdapter } from "./adapters/ethereum.adapter";
 import { EthereumIndexerAdapter } from "./adapters/ethereum.adapter";
 import { BaseIndexerAdapter as BaseL2Adapter } from "./adapters/base.adapter";
 import type { RpcClient } from "./base-indexer.adapter";

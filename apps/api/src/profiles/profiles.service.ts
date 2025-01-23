@@ -2,6 +2,8 @@ import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/commo
 import { ProfileStatus } from "@prisma/client";
 import type { ProfileOwnerDto, ProfilePublicDto } from "@onchain-reputation/shared";
 import { IndexerOrchestrator } from "../indexer/indexer.orchestrator";
+import { PrismaService } from "../prisma/prisma.service";
+import { mapOwnerProfile, mapPublicProfile } from "./profile.mapper";
 import { ProfilesRepository } from "./profiles.repository";
 
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
@@ -11,7 +13,16 @@ export class ProfilesService {
   constructor(
     private readonly profiles: ProfilesRepository,
     private readonly indexerOrchestrator: IndexerOrchestrator,
+    private readonly prisma: PrismaService,
   ) {}
+
+  private async getLastUpdatedAt(walletId: string): Promise<Date | null> {
+    const run = await this.prisma.indexRun.findFirst({
+      where: { walletId, status: "completed" },
+      orderBy: { completedAt: "desc" },
+    });
+    return run?.completedAt ?? null;
+  }
 
   isMockMode(): boolean {
     return process.env.API_MOCK_MODE === "true" || process.env.NODE_ENV === "development";
@@ -33,26 +44,15 @@ export class ProfilesService {
       throw new NotFoundException("Profile not found");
     }
 
-    return {
-      id: full.id,
-      userId: full.userId,
-      slug: full.slug,
-      displayName: full.displayName,
-      visibility: full.visibility,
-      status: full.status,
-      publicCacheVersion: full.publicCacheVersion,
-      reputationIndex: null,
-      dimensions: null,
-      badges: [],
-      lastUpdated: null,
-      wallets: (full.user?.wallets ?? []).map((w) => ({
-        id: w.id,
-        address: w.address,
-        chainScope: w.chainScope,
-        isPrimary: w.isPrimary,
-        linkedAt: w.linkedAt.toISOString(),
-      })),
-    };
+    const primaryWallet = full.user?.wallets.find((w) => w.isPrimary) ?? full.user?.wallets[0];
+    const lastUpdated = primaryWallet
+      ? await this.getLastUpdatedAt(primaryWallet.id)
+      : null;
+
+    return mapOwnerProfile(
+      { ...full, user: full.user ?? undefined },
+      lastUpdated,
+    );
   }
 
   async getPublicProfile(slug: string): Promise<ProfilePublicDto> {
@@ -64,16 +64,12 @@ export class ProfilesService {
       throw new NotFoundException("Profile not found");
     }
 
-    return {
-      slug: profile.slug,
-      displayName: profile.displayName,
-      visibility: profile.visibility,
-      status: profile.status,
-      reputationIndex: null,
-      dimensions: null,
-      badges: [],
-      lastUpdated: null,
-    };
+    const wallet = await this.prisma.wallet.findFirst({
+      where: { userId: profile.userId },
+    });
+    const lastUpdated = wallet ? await this.getLastUpdatedAt(wallet.id) : null;
+
+    return mapPublicProfile(profile, lastUpdated);
   }
 
   private mockOwnerProfile(): ProfileOwnerDto {

@@ -24,6 +24,7 @@ export type ProfilePublicDto = {
   dimensions: ProfileScoreDimensionsDto | null;
   badges: string[];
   lastUpdated: string | null;
+  lastUpdatedAt?: string | null;
   activitySummary?: ActivitySummaryDto | null;
 };
 
