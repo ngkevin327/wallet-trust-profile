@@ -4,6 +4,7 @@ export type WorkerEnv = {
   redisUrl: string;
   rpcUrlEthereum?: string;
   rpcUrlBase?: string;
+  alchemyApiKey?: string;
 };
 
 function requireEnv(name: string): string {
@@ -21,5 +22,6 @@ export function loadWorkerEnv(): WorkerEnv {
     redisUrl: requireEnv("REDIS_URL"),
     rpcUrlEthereum: process.env.RPC_URL_ETHEREUM,
     rpcUrlBase: process.env.RPC_URL_BASE,
+    alchemyApiKey: process.env.ALCHEMY_API_KEY,
   };
 }
