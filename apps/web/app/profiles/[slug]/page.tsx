@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "../../../lib/api/client";
+import { LastUpdated } from "../../../components/profile/last-updated";
 
 export default function PublicProfilePage() {
   const params = useParams<{ slug: string }>();
@@ -47,7 +48,10 @@ export default function PublicProfilePage() {
       </Link>
       <h1 className="mt-6 text-3xl font-semibold">{profile.displayName ?? profile.slug}</h1>
       <p className="mt-2 text-slate-600">@{profile.slug}</p>
-      <p className="mt-4 text-sm text-slate-500">Status: {profile.status}</p>
+      <div className="mt-2">
+        <LastUpdated iso={profile.lastUpdatedAt ?? profile.lastUpdated} />
+      </div>
+      <p className="mt-2 text-sm text-slate-500">Status: {profile.status}</p>
       {profile.reputationIndex != null ? (
         <p className="mt-6 text-4xl font-bold text-brand-700">{profile.reputationIndex}</p>
       ) : (
