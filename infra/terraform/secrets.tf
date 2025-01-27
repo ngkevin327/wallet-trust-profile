@@ -49,3 +49,7 @@ output "secret_jwt_key_arn" {
 output "secret_alchemy_arn" {
   value = aws_secretsmanager_secret.alchemy_api_key.arn
 }
+
+# Populate secret values manually after apply:
+#   aws secretsmanager put-secret-value --secret-id <alchemy_arn> --secret-string "<api-key>"
+# See documentation/runbooks/secrets-setup.md
