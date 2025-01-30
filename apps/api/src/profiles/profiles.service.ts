@@ -89,6 +89,7 @@ export class ProfilesService {
       },
       badges: ["active-voter", "dao-contributor"],
       lastUpdated: new Date().toISOString(),
+      lastUpdatedAt: new Date().toISOString(),
       wallets: [
         {
           id: "b0000000-0000-4000-8000-000000000001",

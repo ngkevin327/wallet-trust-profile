@@ -40,4 +40,12 @@ export class IndexerService {
       update: { lastIndexedBlock },
     });
   }
+
+  async getBlockRangeForReconcile(
+    walletId: string,
+    chainId: number,
+    fromBlock: bigint,
+  ): Promise<{ walletId: string; chainId: number; fromBlock: bigint }> {
+    return { walletId, chainId, fromBlock };
+  }
 }
