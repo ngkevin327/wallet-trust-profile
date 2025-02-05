@@ -1,0 +1,29 @@
+version: "1.0.0"
+dimensions:
+  governance:
+    weight: 0.25
+    max_balance_weight: 0.1
+    rules:
+      vote_participation_rate: 40
+      protocol_diversity: 35
+      tenure_months: 25
+  contribution:
+    weight: 0.3
+    rules:
+      dao_payments: 45
+      grant_patterns: 35
+      tenure: 20
+  payment_reliability:
+    weight: 0.25
+    rules:
+      inbound_consistency: 50
+      counterparty_diversity: 30
+      wash_penalty: 20
+  protocol_participation:
+    weight: 0.2
+    rules:
+      distinct_protocols: 70
+      recency_decay: 30
+composite:
+  clamp_min: 0
+  clamp_max: 100
