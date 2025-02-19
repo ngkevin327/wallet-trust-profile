@@ -14,6 +14,9 @@ import { applyAggregates } from "./pipeline.util";
 import { DlqHandler } from "../queue/dlq.handler";
 import { getRetryDelay, shouldRetry } from "../queue/retry.policy";
 import { ReorgHandler } from "./reorg.handler";
+import { buildScoringInputs } from "../scoring/inputs.builder";
+import { ScoringEngine } from "../scoring/scoring.engine";
+import { SnapshotWriter } from "../scoring/snapshot.writer";
 
 const STREAM_KEY = "indexer:jobs";
 const GROUP = "indexer-workers";
@@ -46,6 +49,8 @@ export class IndexerConsumer {
   private dlq: DlqHandler;
   private reorg: ReorgHandler;
   private snapshot: SnapshotClient;
+  private scoringEngine: ScoringEngine;
+  private snapshotWriter: SnapshotWriter;
   private ethAdapter: EthereumIndexerAdapter;
   private baseAdapter: BaseL2Adapter;
   private running = false;
@@ -63,6 +68,8 @@ export class IndexerConsumer {
     this.dlq = new DlqHandler(this.redis);
     this.reorg = new ReorgHandler(this.prisma);
     this.snapshot = new SnapshotClient();
+    this.scoringEngine = new ScoringEngine();
+    this.snapshotWriter = new SnapshotWriter(this.prisma);
 
     const ethRpc =
       env.rpcUrlEthereum ??
@@ -215,6 +222,10 @@ export class IndexerConsumer {
       const { facts: toStore } = applyAggregates(kept);
       await this.factsRepo.upsertBatch(walletId, indexRun.id, toStore);
       await this.indexerService.updateLastIndexedBlock(walletId, chainId, toBlock);
+
+      const scoringInputs = buildScoringInputs(wallet.address, toStore, wallet.linkedAt);
+      const scoringResult = this.scoringEngine.score(scoringInputs);
+      await this.snapshotWriter.persist(walletId, indexRun.id, scoringResult);
 
       await this.prisma.indexRun.update({
         where: { id: indexRun.id },
