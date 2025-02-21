@@ -10,6 +10,7 @@ export const API_ROUTES = {
   },
   me: {
     profile: `/${API_VERSION}/me/profile`,
+    scoreBreakdown: `/${API_VERSION}/me/profile/score-breakdown`,
     wallets: `/${API_VERSION}/me/wallets`,
     refresh: `/${API_VERSION}/me/profile/refresh`,
     exports: `/${API_VERSION}/me/exports`,
