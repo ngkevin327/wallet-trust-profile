@@ -16,7 +16,28 @@ export default function FaqPage() {
           <a href="/documentation/scoring-methodology" className="text-brand-700 hover:underline">
             scoring methodology
           </a>{" "}
-          for details.
+          for dimension weights, snapshot audits, and badge rules.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-lg font-medium">How are dimension weights applied?</h2>
+        <p className="text-slate-600">
+          Governance (25%), contribution (30%), payment reliability (25%), and protocol participation
+          (20%) combine into a 0–100 reputation index. Each index run stores an immutable snapshot
+          with an inputs hash for reproducibility.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-lg font-medium">What are trust signals?</h2>
+        <p className="text-slate-600">
+          Trust signals highlight registry matches and heuristic risk patterns with confidence
+          scores and plain-language reasons. See{" "}
+          <a href="/documentation/trust-signals" className="text-brand-700 hover:underline">
+            trust signal semantics
+          </a>{" "}
+          to dispute a flag.
         </p>
       </section>
     </main>
