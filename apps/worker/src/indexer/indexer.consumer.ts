@@ -17,6 +17,8 @@ import { ReorgHandler } from "./reorg.handler";
 import { buildScoringInputs } from "../scoring/inputs.builder";
 import { ScoringEngine } from "../scoring/scoring.engine";
 import { SnapshotWriter } from "../scoring/snapshot.writer";
+import { BadgeEvaluator } from "../badges/badge.evaluator";
+import { RiskEngine } from "../risk/risk.engine";
 
 const STREAM_KEY = "indexer:jobs";
 const GROUP = "indexer-workers";
@@ -51,6 +53,8 @@ export class IndexerConsumer {
   private snapshot: SnapshotClient;
   private scoringEngine: ScoringEngine;
   private snapshotWriter: SnapshotWriter;
+  private badgeEvaluator: BadgeEvaluator;
+  private riskEngine: RiskEngine;
   private ethAdapter: EthereumIndexerAdapter;
   private baseAdapter: BaseL2Adapter;
   private running = false;
@@ -70,6 +74,8 @@ export class IndexerConsumer {
     this.snapshot = new SnapshotClient();
     this.scoringEngine = new ScoringEngine();
     this.snapshotWriter = new SnapshotWriter(this.prisma);
+    this.badgeEvaluator = new BadgeEvaluator(this.prisma);
+    this.riskEngine = new RiskEngine(this.prisma);
 
     const ethRpc =
       env.rpcUrlEthereum ??
@@ -226,6 +232,15 @@ export class IndexerConsumer {
       const scoringInputs = buildScoringInputs(wallet.address, toStore, wallet.linkedAt);
       const scoringResult = this.scoringEngine.score(scoringInputs);
       await this.snapshotWriter.persist(walletId, indexRun.id, scoringResult);
+      await this.badgeEvaluator.syncAwards(walletId, scoringResult);
+      const trustFlags = await this.riskEngine.evaluate(wallet.address, toStore);
+      console.log(
+        JSON.stringify({
+          event: "trust_evaluated",
+          walletId,
+          flagCount: trustFlags.length,
+        }),
+      );
 
       await this.prisma.indexRun.update({
         where: { id: indexRun.id },
