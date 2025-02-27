@@ -1,0 +1,50 @@
+version: "1.0.0"
+badges:
+  - code: active-voter
+    title: Active Voter
+    min_governance_votes: 5
+    min_reputation_index: 40
+  - code: governance-leader
+    title: Governance Leader
+    min_governance_votes: 20
+    min_reputation_index: 60
+  - code: dao-contributor
+    title: DAO Contributor
+    min_dao_payments: 3
+    min_reputation_index: 45
+  - code: grant-recipient
+    title: Grant Recipient
+    min_grant_patterns: 2
+    min_reputation_index: 35
+  - code: protocol-explorer
+    title: Protocol Explorer
+    min_distinct_protocols: 4
+    min_reputation_index: 40
+  - code: multi-protocol
+    title: Multi-Protocol
+    min_distinct_protocols: 6
+    min_reputation_index: 55
+  - code: reliable-payer
+    title: Reliable Payer
+    min_payment_score: 60
+    min_reputation_index: 50
+  - code: trusted-counterparty
+    title: Trusted Counterparty
+    min_unique_counterparties: 8
+    min_reputation_index: 45
+  - code: long-tenure
+    title: Long Tenure
+    min_tenure_months: 12
+    min_reputation_index: 40
+  - code: established-wallet
+    title: Established Wallet
+    min_wallet_age_days: 365
+    min_reputation_index: 50
+  - code: reputation-elite
+    title: Reputation Elite
+    min_reputation_index: 85
+  - code: balanced-builder
+    title: Balanced Builder
+    min_reputation_index: 70
+    min_governance_score: 50
+    min_contribution_score: 50
