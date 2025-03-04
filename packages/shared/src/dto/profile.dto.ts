@@ -15,6 +15,9 @@ export type ActivitySummaryDto = {
   topProtocols: { category: string; count: number }[];
 };
 
+import type { BadgeDto } from "./badge.dto";
+import type { TrustSignalDto } from "./trust-signal.dto";
+
 export type ProfilePublicDto = {
   slug: string;
   displayName: string | null;
@@ -22,7 +25,8 @@ export type ProfilePublicDto = {
   status: ProfileStatusDto;
   reputationIndex: number | null;
   dimensions: ProfileScoreDimensionsDto | null;
-  badges: string[];
+  badges: BadgeDto[];
+  trustSignals?: TrustSignalDto[];
   lastUpdated: string | null;
   lastUpdatedAt?: string | null;
   activitySummary?: ActivitySummaryDto | null;
