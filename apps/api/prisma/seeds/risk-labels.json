@@ -1,0 +1,32 @@
+[
+  {
+    "code": "exploit-drainer-001",
+    "title": "Known exploit drainer",
+    "description": "Contract associated with a documented wallet drainer incident.",
+    "severity": "high"
+  },
+  {
+    "code": "exploit-phish-002",
+    "title": "Phishing approval contract",
+    "description": "Address flagged for malicious token approval phishing.",
+    "severity": "high"
+  },
+  {
+    "code": "mixer-tornado-legacy",
+    "title": "Legacy mixer interaction",
+    "description": "Interactions with sanctioned or flagged mixer contracts.",
+    "severity": "medium"
+  },
+  {
+    "code": "flash-loan-attacker",
+    "title": "Flash loan exploit participant",
+    "description": "Counterparty linked to flash-loan exploit transactions.",
+    "severity": "high"
+  },
+  {
+    "code": "nft-wash-bot",
+    "title": "NFT wash trading bot",
+    "description": "Automated NFT wash trading pattern detected on-chain.",
+    "severity": "medium"
+  }
+]

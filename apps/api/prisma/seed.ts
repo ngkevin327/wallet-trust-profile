@@ -93,6 +93,39 @@ async function seedTokenDenylist() {
   console.log(`Seeded ${tokens.length} denylisted tokens`);
 }
 
+async function seedRiskLabels() {
+  const seedsDir = join(__dirname, "seeds");
+  const labels = JSON.parse(
+    readFileSync(join(seedsDir, "risk-labels.json"), "utf8"),
+  ) as {
+    code: string;
+    title: string;
+    description: string;
+    severity: "low" | "medium" | "high";
+  }[];
+
+  for (const label of labels) {
+    await prisma.riskLabel.upsert({
+      where: { code: label.code },
+      update: {
+        title: label.title,
+        description: label.description,
+        severity: label.severity,
+        active: true,
+      },
+      create: {
+        code: label.code,
+        title: label.title,
+        description: label.description,
+        severity: label.severity,
+        active: true,
+      },
+    });
+  }
+
+  console.log(`Seeded ${labels.length} risk labels`);
+}
+
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
 const DEMO_WALLET_ID = "b0000000-0000-4000-8000-000000000001";
 const DEMO_PROFILE_ID = "c0000000-0000-4000-8000-000000000001";
@@ -135,8 +168,11 @@ async function main() {
 
   await seedRegistry();
   await seedTokenDenylist();
+  await seedRiskLabels();
 
-  console.log("Seed complete: demo user, wallet, profile, registry, and denylist created");
+  console.log(
+    "Seed complete: demo user, wallet, profile, registry, denylist, and risk labels created",
+  );
 }
 
 main()
