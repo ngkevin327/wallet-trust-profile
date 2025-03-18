@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "../../../lib/api/client";
 import { LastUpdated } from "../../../components/profile/last-updated";
+import { TrustSignalsPanel } from "../../../components/profile/trust-signals";
 
 export default function PublicProfilePage() {
   const params = useParams<{ slug: string }>();
@@ -57,6 +58,21 @@ export default function PublicProfilePage() {
       ) : (
         <p className="mt-6 text-slate-500">Reputation score pending</p>
       )}
+      {profile.badges.length > 0 ? (
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {profile.badges.map((badge) => (
+            <li
+              key={badge.code}
+              className="rounded-full bg-brand-50 px-3 py-1 text-sm text-brand-800"
+            >
+              {badge.title}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {profile.trustSignals && profile.trustSignals.length > 0 ? (
+        <TrustSignalsPanel signals={profile.trustSignals} />
+      ) : null}
     </main>
   );
 }

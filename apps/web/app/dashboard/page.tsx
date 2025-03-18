@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../lib/api/client";
 import { getAccessToken } from "../../lib/auth/token";
 import { LastUpdated } from "../../components/profile/last-updated";
+import { TrustSignalsPanel } from "../../components/profile/trust-signals";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<ProfileOwnerDto | null>(null);
@@ -30,6 +31,9 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-semibold">{profile.displayName ?? profile.slug}</h1>
       <LastUpdated iso={profile.lastUpdatedAt ?? profile.lastUpdated} />
       <p className="mt-2 text-sm text-slate-600">Status: {profile.status}</p>
+      {profile.trustSignals && profile.trustSignals.length > 0 ? (
+        <TrustSignalsPanel signals={profile.trustSignals} />
+      ) : null}
       <div className="mt-6 flex gap-4">
         <Link
           href={`/profiles/${profile.slug}`}
