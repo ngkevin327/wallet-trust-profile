@@ -19,6 +19,7 @@ import { ScoringEngine } from "../scoring/scoring.engine";
 import { SnapshotWriter } from "../scoring/snapshot.writer";
 import { BadgeEvaluator } from "../badges/badge.evaluator";
 import { RiskEngine } from "../risk/risk.engine";
+import { ProfileProjector } from "../profile/profile.projector";
 
 const STREAM_KEY = "indexer:jobs";
 const GROUP = "indexer-workers";
@@ -55,6 +56,7 @@ export class IndexerConsumer {
   private snapshotWriter: SnapshotWriter;
   private badgeEvaluator: BadgeEvaluator;
   private riskEngine: RiskEngine;
+  private profileProjector: ProfileProjector;
   private ethAdapter: EthereumIndexerAdapter;
   private baseAdapter: BaseL2Adapter;
   private running = false;
@@ -76,6 +78,7 @@ export class IndexerConsumer {
     this.snapshotWriter = new SnapshotWriter(this.prisma);
     this.badgeEvaluator = new BadgeEvaluator(this.prisma);
     this.riskEngine = new RiskEngine(this.prisma);
+    this.profileProjector = new ProfileProjector(this.prisma, this.redis);
 
     const ethRpc =
       env.rpcUrlEthereum ??
@@ -241,6 +244,17 @@ export class IndexerConsumer {
           flagCount: trustFlags.length,
         }),
       );
+
+      await this.profileProjector.project({
+        userId,
+        walletId,
+        walletAddress: wallet.address,
+        scoringResult,
+        scoringVersion: scoringResult.scoringVersion,
+        trustFlags,
+        facts: toStore,
+        lastUpdatedAt: new Date(),
+      });
 
       await this.prisma.indexRun.update({
         where: { id: indexRun.id },

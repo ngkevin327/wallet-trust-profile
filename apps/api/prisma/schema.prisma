@@ -213,7 +213,20 @@ model Profile {
   status              ProfileStatus     @default(created)
   publicCacheVersion  Int               @default(0) @map("public_cache_version")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projection  ProfileProjection?
 
   @@map("profiles")
+}
+
+model ProfileProjection {
+  profileId      String   @id @map("profile_id") @db.Uuid
+  payload        Json     @db.JsonB
+  scoringVersion String   @map("scoring_version") @db.VarChar(32)
+  lastUpdatedAt  DateTime @map("last_updated_at") @db.Timestamptz
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("profile_projections")
 }

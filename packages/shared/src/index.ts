@@ -5,3 +5,6 @@ export * from "./dto/profile.dto";
 export * from "./dto/score-breakdown.dto";
 export * from "./dto/trust-signal.dto";
 export * from "./dto/badge.dto";
+export * from "./dto/dao-contribution.dto";
+export * from "./dto/profile-projection.dto";
+export * from "./utils/address";

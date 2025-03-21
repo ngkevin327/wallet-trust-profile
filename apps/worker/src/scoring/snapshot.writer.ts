@@ -23,4 +23,14 @@ export class SnapshotWriter {
     });
     return snapshot.id;
   }
+
+  getLastSnapshotId(walletId: string): Promise<string | null> {
+    return this.prisma.scoreSnapshot
+      .findFirst({
+        where: { walletId },
+        orderBy: { createdAt: "desc" },
+        select: { id: true },
+      })
+      .then((row) => row?.id ?? null);
+  }
 }

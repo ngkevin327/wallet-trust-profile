@@ -16,6 +16,7 @@ export type ActivitySummaryDto = {
 };
 
 import type { BadgeDto } from "./badge.dto";
+import type { DaoContributionDto } from "./dao-contribution.dto";
 import type { TrustSignalDto } from "./trust-signal.dto";
 
 export type ProfilePublicDto = {
@@ -27,6 +28,8 @@ export type ProfilePublicDto = {
   dimensions: ProfileScoreDimensionsDto | null;
   badges: BadgeDto[];
   trustSignals?: TrustSignalDto[];
+  daoContributions?: DaoContributionDto[];
+  scoringVersion?: string | null;
   lastUpdated: string | null;
   lastUpdatedAt?: string | null;
   activitySummary?: ActivitySummaryDto | null;
