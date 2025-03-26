@@ -1,4 +1,13 @@
-import { Controller, Get, NotFoundException, Param, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -6,6 +15,7 @@ import { JwtPayload } from "../auth/jwt.service";
 import { RateLimitGuard } from "../common/guards/rate-limit.guard";
 import { UsersRepository } from "../users/users.repository";
 import { WalletsRepository } from "../wallets/wallets.repository";
+import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { ProfilesService } from "./profiles.service";
 
 @ApiTags("profiles")
@@ -25,6 +35,18 @@ export class MeProfileController {
     return this.profilesService.getOwnerProfile(user.sub);
   }
 
+  @Patch()
+  @ApiOperation({ summary: "Update owner profile fields" })
+  updateMyProfile(@CurrentUser() user: JwtPayload, @Body() dto: UpdateProfileDto) {
+    return this.profilesService.updateOwnerProfile(user.sub, dto);
+  }
+
+  @Get("slug/:slug/check")
+  @ApiOperation({ summary: "Check slug availability" })
+  checkSlug(@Param("slug") slug: string) {
+    return this.profilesService.checkSlugAvailability(slug);
+  }
+
   @Post("refresh")
   @ApiOperation({ summary: "Trigger profile re-index (premium)" })
   async refreshProfile(@CurrentUser() user: JwtPayload) {
@@ -37,18 +59,5 @@ export class MeProfileController {
     const chainId = primary.chainScope[0]?.includes("8453") ? 8453 : 1;
     const isPremium = dbUser?.subscriptionTier === "premium";
     return this.profilesService.triggerRefresh(user.sub, primary.id, chainId, isPremium);
-  }
-}
-
-@ApiTags("profiles")
-@Controller("profiles")
-@UseGuards(RateLimitGuard)
-export class ProfilesController {
-  constructor(private readonly profilesService: ProfilesService) {}
-
-  @Get(":slug")
-  @ApiOperation({ summary: "Get public profile by slug" })
-  getPublicProfile(@Param("slug") slug: string) {
-    return this.profilesService.getPublicProfile(slug);
   }
 }

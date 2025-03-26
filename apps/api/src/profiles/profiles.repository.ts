@@ -1,49 +1,23 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { Prisma, Profile, ProfileStatus, ProfileVisibility } from "@prisma/client";
+import { Prisma, ProfileStatus, ProfileVisibility } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
-
-const RESERVED_SLUGS = new Set([
-  "admin",
-  "api",
-  "app",
-  "health",
-  "login",
-  "logout",
-  "me",
-  "profiles",
-  "settings",
-  "support",
-  "verify",
-  "wallet",
-  "wallets",
-]);
-
-const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])?$/;
+import { validateSlug } from "./slug.validator";
 
 @Injectable()
 export class ProfilesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  validateSlug(slug: string): void {
-    const normalized = slug.toLowerCase().trim();
-    if (!SLUG_PATTERN.test(normalized)) {
-      throw new BadRequestException(
-        "Slug must be 3-63 characters, lowercase alphanumeric with hyphens",
-      );
-    }
-    if (RESERVED_SLUGS.has(normalized)) {
-      throw new BadRequestException("Slug is reserved");
-    }
-  }
-
   findById(id: string): Promise<Profile | null> {
     return this.prisma.profile.findUnique({ where: { id } });
   }
 
-  findBySlug(slug: string): Promise<Profile | null> {
+  findBySlug(slug: string) {
     return this.prisma.profile.findUnique({
       where: { slug: slug.toLowerCase() },
-      include: { user: { include: { wallets: true } } },
+      include: {
+        user: { include: { wallets: true } },
+        projection: true,
+      },
     });
   }
 
@@ -57,8 +31,7 @@ export class ProfilesRepository {
     displayName?: string;
     visibility?: ProfileVisibility;
   }): Promise<Profile> {
-    this.validateSlug(data.slug);
-    const slug = data.slug.toLowerCase();
+    const slug = validateSlug(data.slug);
 
     const existing = await this.prisma.profile.findUnique({ where: { slug } });
     if (existing) {
@@ -85,8 +58,7 @@ export class ProfilesRepository {
     }
 
     if (typeof data.slug === "string") {
-      this.validateSlug(data.slug);
-      data.slug = data.slug.toLowerCase();
+      data.slug = validateSlug(data.slug);
     }
 
     return this.prisma.profile.update({ where: { id }, data });

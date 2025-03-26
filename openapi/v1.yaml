@@ -65,6 +65,43 @@ paths:
                 $ref: "#/components/schemas/ProfileOwner"
         "404":
           $ref: "#/components/responses/NotFound"
+    patch:
+      tags: [profiles]
+      summary: Update owner profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfile"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOwner"
+
+  /profiles/by-wallet/{address}:
+    get:
+      tags: [profiles]
+      summary: Get public profile by wallet address
+      parameters:
+        - name: address
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfilePublic"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /profiles/{slug}:
     get:
@@ -158,11 +195,29 @@ components:
         badges:
           type: array
           items:
-            type: string
+            type: object
+        daoContributions:
+          type: array
+          items:
+            type: object
+        scoringVersion:
+          type: string
+          nullable: true
         lastUpdated:
           type: string
           format: date-time
           nullable: true
+
+    UpdateProfile:
+      type: object
+      properties:
+        displayName:
+          type: string
+        slug:
+          type: string
+        visibility:
+          type: string
+          enum: [public, private]
 
     ProfileOwner:
       allOf:
