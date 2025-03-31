@@ -5,6 +5,7 @@ export type ApiEnv = {
   redisUrl: string;
   jwtIssuer: string;
   jwtAudience: string;
+  cacheTtlSeconds: number;
 };
 
 function requireEnv(name: string): string {
@@ -29,5 +30,6 @@ export function loadApiEnv(): ApiEnv {
     redisUrl: requireEnv("REDIS_URL"),
     jwtIssuer: requireEnv("JWT_ISSUER"),
     jwtAudience: requireEnv("JWT_AUDIENCE"),
+    cacheTtlSeconds: Number(process.env.CACHE_TTL_SECONDS ?? 600),
   };
 }
