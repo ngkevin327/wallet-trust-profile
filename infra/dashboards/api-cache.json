@@ -1,0 +1,30 @@
+{
+  "title": "API Profile Cache",
+  "description": "Cache hit rate and latency for public profile reads",
+  "panels": [
+    {
+      "title": "cache.hit",
+      "query": "sum(rate(cache_hit{route='/profiles/:slug'}[5m]))"
+    },
+    {
+      "title": "cache.miss",
+      "query": "sum(rate(cache_miss{route='/profiles/:slug'}[5m]))"
+    },
+    {
+      "title": "cache.latency_p95",
+      "query": "histogram_quantile(0.95, cache_latency_ms{route='/profiles/:slug'})"
+    },
+    {
+      "title": "cache.hit_rate",
+      "query": "sum(rate(cache_hit[5m])) / (sum(rate(cache_hit[5m])) + sum(rate(cache_miss[5m])))"
+    }
+  ],
+  "alerts": [
+    {
+      "name": "low_cache_hit_rate",
+      "condition": "hit_rate < 0.7",
+      "for": "15m",
+      "severity": "warning"
+    }
+  ]
+}
