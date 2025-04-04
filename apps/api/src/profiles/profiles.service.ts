@@ -13,6 +13,7 @@ import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { mapProjectionToOwner, mapProjectionToPublic } from "./projection.mapper";
 import { ProjectionsRepository } from "./projections.repository";
 import { ProfilesRepository } from "./profiles.repository";
+import { assertPublicReadable } from "./public-profile.policy";
 import { validateSlug } from "./slug.validator";
 
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
@@ -43,10 +44,7 @@ export class ProfilesService {
     }
 
     const row = await this.projections.findBySlug(slug);
-    // Uniform 404 for unknown slugs and private profiles (no existence leak).
-    if (!row || row.visibility === ProfileVisibility.private) {
-      throw new NotFoundException("Profile not found");
-    }
+    assertPublicReadable(row);
 
     if (!row.projection) {
       throw new NotFoundException("Profile not found");
