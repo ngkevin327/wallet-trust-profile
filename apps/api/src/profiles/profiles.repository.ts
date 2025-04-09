@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { Prisma, ProfileStatus, ProfileVisibility } from "@prisma/client";
+import { Prisma, Profile, ProfileStatus, ProfileVisibility } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { validateSlug } from "./slug.validator";
 
@@ -64,6 +64,7 @@ export class ProfilesRepository {
     return this.prisma.profile.update({ where: { id }, data });
   }
 
+  /** Bumps CDN/Redis cache key version — call after owner PATCH or worker reindex. */
   bumpCacheVersion(id: string): Promise<Profile> {
     return this.prisma.profile.update({
       where: { id },
