@@ -17,6 +17,9 @@
     "test": "echo \"No shared tests yet\"",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "viem": "^2.21.54"
+  },
   "devDependencies": {
     "@onchain-reputation/config": "workspace:*",
     "typescript": "^5.7.2"

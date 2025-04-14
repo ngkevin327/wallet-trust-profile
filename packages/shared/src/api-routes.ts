@@ -10,6 +10,7 @@ export const API_ROUTES = {
   },
   me: {
     profile: `/${API_VERSION}/me/profile`,
+    slugCheck: (slug: string) => `/${API_VERSION}/me/profile/slug/${slug}/check`,
     scoreBreakdown: `/${API_VERSION}/me/profile/score-breakdown`,
     wallets: `/${API_VERSION}/me/wallets`,
     refresh: `/${API_VERSION}/me/profile/refresh`,
