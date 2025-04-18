@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { normalizeAddress } from "@onchain-reputation/shared";
 import { Prisma, Wallet } from "@prisma/client";
 import { WalletConflictError } from "../common/errors/wallet-conflict.error";
 import { PrismaService } from "../prisma/prisma.service";
@@ -12,10 +13,11 @@ export class WalletsRepository {
   }
 
   findByAddress(address: string, chainScope: string[]): Promise<Wallet | null> {
+    const checksum = normalizeAddress(address);
     return this.prisma.wallet.findUnique({
       where: {
         address_chainScope: {
-          address: address.toLowerCase(),
+          address: checksum,
           chainScope,
         },
       },
@@ -35,7 +37,9 @@ export class WalletsRepository {
         data: {
           ...data,
           address:
-            typeof data.address === "string" ? data.address.toLowerCase() : data.address,
+            typeof data.address === "string"
+              ? normalizeAddress(data.address)
+              : data.address,
         },
       });
     } catch (error) {
@@ -63,7 +67,7 @@ export class WalletsRepository {
     }
 
     return this.create({
-      address: address.toLowerCase(),
+      address: normalizeAddress(address),
       chainScope,
       isPrimary,
       user: { connect: { id: userId } },
