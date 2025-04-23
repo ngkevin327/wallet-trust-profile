@@ -1,0 +1,22 @@
+[
+  {
+    "name": "gitcoin treasury inflow",
+    "wallet": "0x742d35cc6634c0532925a3b844bc9e7595f0beb0",
+    "chainId": 1,
+    "from": "0xde0b295669a9fd93d5f285d675a15f04fdc1afda",
+    "to": "0x742d35cc6634c0532925a3b844bc9e7595f0beb0",
+    "value": "1000000000000000000",
+    "expectedDao": "gitcoin",
+    "expectedConfidence": "direct_treasury"
+  },
+  {
+    "name": "optimism collective treasury",
+    "wallet": "0x742d35cc6634c0532925a3b844bc9e7595f0beb0",
+    "chainId": 1,
+    "from": "0x0bE471f6cA7Cbf49dD061450d9CF0D4A2F99aBE9",
+    "to": "0x742d35cc6634c0532925a3b844bc9e7595f0beb0",
+    "value": "500000000000000000",
+    "expectedDao": "optimism-collective",
+    "expectedConfidence": "direct_treasury"
+  }
+]
