@@ -3,6 +3,7 @@ import type { ProfileProjectionDto } from "@onchain-reputation/shared";
 import type Redis from "ioredis";
 import { getBadgeTitle } from "../badges/badge-titles";
 import type { ClassifiedFact } from "../classifier/classifier.service";
+import { DaoAggregatorService } from "../dao/dao-aggregator.service";
 import type { TrustFlag } from "../risk/risk.engine";
 import type { ScoringResult } from "../scoring/scoring.types";
 import { publishProfileIndexed } from "./profile.events";
@@ -15,6 +16,8 @@ type DimensionJson = {
 };
 
 export class ProfileProjector {
+  private readonly daoAggregator = new DaoAggregatorService(this.prisma);
+
   constructor(
     private readonly prisma: PrismaClient,
     private readonly redis?: Redis,
@@ -42,6 +45,11 @@ export class ProfileProjector {
     });
 
     const dimensions = params.scoringResult.dimensions as DimensionJson;
+    const daoContributions =
+      params.facts.length > 0
+        ? await this.daoAggregator.aggregate(params.walletAddress, params.facts)
+        : [];
+
     const categoryCounts = new Map<string, number>();
     for (const fact of params.facts) {
       categoryCounts.set(fact.category, (categoryCounts.get(fact.category) ?? 0) + 1);
@@ -71,7 +79,7 @@ export class ProfileProjector {
         confidence: f.confidence,
         reason: f.reason,
       })),
-      daoContributions: [],
+      daoContributions,
       resumeSummary: {
         totalTransactions: params.facts.length,
         topCategories: [...categoryCounts.entries()]
