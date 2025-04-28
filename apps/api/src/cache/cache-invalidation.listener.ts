@@ -24,7 +24,12 @@ export class CacheInvalidationListener implements OnModuleInit, OnModuleDestroy 
     this.subscriber.on("message", (_channel, message) => {
       void this.handleMessage(message);
     });
-    this.logger.log("Subscribed to profile.indexed events for cache invalidation");
+    this.logger.log(
+      JSON.stringify({
+        event: "cache_invalidation_listener_started",
+        channel: PROFILE_INDEXED_CHANNEL,
+      }),
+    );
   }
 
   private async handleMessage(message: string): Promise<void> {
