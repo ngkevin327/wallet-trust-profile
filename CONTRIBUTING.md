@@ -76,6 +76,10 @@ Keep subjects under 72 characters. Put additional context in the PR description,
 - API e2e tests (`apps/api/test/*.e2e-spec.ts`) expect Postgres and Redis via `docker compose up -d`.
 - Reset local DB between e2e runs: `pnpm --filter @onchain-reputation/api db:migrate && db:seed`.
 
+## DAO registry updates
+
+See [documentation/dao-registry-curation.md](documentation/dao-registry-curation.md) for how to add, review, or remove DAOs in `registry-daos.json`. Registry PRs must keep at least 20 active DAOs for launch and should run worker DAO aggregator tests.
+
 ## Questions
 
 Open a discussion or ping the platform team channel for architecture decisions before large refactors.
