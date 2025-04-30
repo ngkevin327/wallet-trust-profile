@@ -1,7 +1,9 @@
 import type {
   BadgeDto,
+  DaoContributionDto,
   ProfileOwnerDto,
   ProfilePublicDto,
+  ProfileProjectionDto,
   ProfileScoreDimensionsDto,
   TrustSignalDto,
 } from "@onchain-reputation/shared";
@@ -17,7 +19,15 @@ type ScoreContext = {
   dimensions: ProfileScoreDimensionsDto | null;
   badges: BadgeDto[];
   trustSignals: TrustSignalDto[];
+  daoContributions?: DaoContributionDto[];
+  scoringVersion?: string | null;
 };
+
+export function mapDaoContributionsFromProjection(
+  payload: ProfileProjectionDto,
+): DaoContributionDto[] | undefined {
+  return payload.daoContributions.length > 0 ? payload.daoContributions : undefined;
+}
 
 export function mapPublicProfile(
   profile: Profile,
@@ -38,6 +48,8 @@ export function mapPublicProfile(
     dimensions: score.dimensions,
     badges: score.badges,
     trustSignals: score.trustSignals,
+    daoContributions: score.daoContributions,
+    scoringVersion: score.scoringVersion ?? null,
     lastUpdated: lastUpdatedAt?.toISOString() ?? null,
     lastUpdatedAt: lastUpdatedAt?.toISOString() ?? null,
   };
@@ -58,6 +70,36 @@ export function mapOwnerProfile(
     id: profile.id,
     userId: profile.userId,
     publicCacheVersion: profile.publicCacheVersion,
+    wallets: (profile.user?.wallets ?? []).map((w) => ({
+      id: w.id,
+      address: w.address,
+      chainScope: w.chainScope,
+      isPrimary: w.isPrimary,
+      linkedAt: w.linkedAt.toISOString(),
+    })),
+  };
+}
+
+export function mapProjectionPayloadToOwner(
+  payload: ProfileProjectionDto,
+  profile: ProfileWithRelations,
+): ProfileOwnerDto {
+  return {
+    slug: payload.slug,
+    displayName: payload.displayName,
+    visibility: payload.visibility,
+    status: payload.status,
+    reputationIndex: payload.reputationIndex,
+    dimensions: payload.dimensions,
+    badges: payload.badges,
+    trustSignals: payload.trustSignals,
+    daoContributions: mapDaoContributionsFromProjection(payload),
+    scoringVersion: payload.scoringVersion,
+    lastUpdated: payload.lastUpdatedAt,
+    lastUpdatedAt: payload.lastUpdatedAt,
+    id: profile.id,
+    userId: profile.userId,
+    publicCacheVersion: payload.publicCacheVersion,
     wallets: (profile.user?.wallets ?? []).map((w) => ({
       id: w.id,
       address: w.address,

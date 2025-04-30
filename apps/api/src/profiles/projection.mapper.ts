@@ -1,5 +1,6 @@
 import type { ProfileOwnerDto, ProfileProjectionDto, ProfilePublicDto } from "@onchain-reputation/shared";
 import type { Profile, Wallet } from "@prisma/client";
+import { mapDaoContributionsFromProjection } from "./profile.mapper";
 
 export function mapProjectionToPublic(payload: ProfileProjectionDto): ProfilePublicDto {
   return {
@@ -11,7 +12,7 @@ export function mapProjectionToPublic(payload: ProfileProjectionDto): ProfilePub
     dimensions: payload.dimensions,
     badges: payload.badges,
     trustSignals: payload.trustSignals,
-    daoContributions: payload.daoContributions,
+    daoContributions: mapDaoContributionsFromProjection(payload),
     scoringVersion: payload.scoringVersion,
     lastUpdated: payload.lastUpdatedAt,
     lastUpdatedAt: payload.lastUpdatedAt,
