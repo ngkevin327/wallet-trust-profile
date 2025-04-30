@@ -1,5 +1,10 @@
 import type { PrismaClient } from "@prisma/client";
-import type { DaoContributionConfidenceDto, DaoContributionDto } from "@onchain-reputation/shared";
+import type {
+  DaoContributionConfidenceDto,
+  DaoContributionDto,
+} from "@onchain-reputation/shared";
+
+export type { DaoContributionConfidenceDto as DaoAttributionConfidence };
 import type { ClassifiedFact } from "../classifier/classifier.service";
 
 type DaoRegistry = {
