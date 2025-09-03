@@ -6,6 +6,8 @@ import { HttpExceptionFilter } from "../src/common/filters/http-exception.filter
 import {
   MOCK_PRIVATE_SLUG,
   PUBLIC_PROFILE_SLUG,
+  PUBLIC_WALLET_LOWERCASE,
+  mockPublicProfileResponse,
 } from "./helpers/seed-profiles";
 
 describe("Public profiles (e2e)", () => {
@@ -45,7 +47,7 @@ describe("Public profiles (e2e)", () => {
       .expect((res) => {
         expect(res.body.slug).toBe(PUBLIC_PROFILE_SLUG);
         expect(res.body.visibility).toBe("public");
-        expect(res.body.scoringVersion).toBe("1.0.0");
+        expect(res.body.scoringVersion).toBe(mockPublicProfileResponse.scoringVersion);
         expect(res.headers["x-profile-cache-version"]).toBeDefined();
       });
   });
@@ -58,7 +60,31 @@ describe("Public profiles (e2e)", () => {
     return request(app.getHttpServer()).get("/v1/profiles/unknown-slug-xyz").expect(404);
   });
 
-  it("GET /v1/me/profile returns owner profile including private visibility in mock", () => {
+  it("GET /v1/profiles/by-wallet/:address resolves profile with mixed-case address", () => {
+    return request(app.getHttpServer())
+      .get(`/v1/profiles/by-wallet/${PUBLIC_WALLET_LOWERCASE}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.slug).toBe(PUBLIC_PROFILE_SLUG);
+        expect(res.headers["x-canonical-slug"]).toBe(PUBLIC_PROFILE_SLUG);
+      });
+  });
+
+  it("GET /v1/profiles/by-wallet/:address?redirect=true returns 302 to /u/{slug}", () => {
+    return request(app.getHttpServer())
+      .get(`/v1/profiles/by-wallet/${PUBLIC_WALLET_LOWERCASE}?redirect=true`)
+      .expect(302)
+      .expect((res) => {
+        expect(res.headers.location).toContain(`/u/${PUBLIC_PROFILE_SLUG}`);
+      });
+  });
+
+  it("cache version header is present on public reads", async () => {
+    const first = await request(app.getHttpServer()).get(`/v1/profiles/${PUBLIC_PROFILE_SLUG}`);
+    expect(first.headers["x-profile-cache-version"]).toBeDefined();
+  });
+
+  it("GET /v1/me/profile returns owner profile (mock does not require auth in dev)", () => {
     return request(app.getHttpServer())
       .get("/v1/me/profile")
       .expect(200)
