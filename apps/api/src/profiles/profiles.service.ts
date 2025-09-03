@@ -19,6 +19,7 @@ import { validateSlug } from "./slug.validator";
 const DEMO_USER_ID = "a0000000-0000-4000-8000-000000000001";
 const MOCK_PUBLIC_SLUG = "demo-builder";
 const MOCK_PRIVATE_SLUG = "private-demo";
+const PUBLIC_PROFILE_SLUG = MOCK_PUBLIC_SLUG;
 
 @Injectable()
 export class ProfilesService {
@@ -66,6 +67,16 @@ export class ProfilesService {
   async getPublicProfileByWallet(
     address: string,
   ): Promise<{ profile: ProfilePublicDto; cacheVersion: number | null; canonicalSlug: string }> {
+    if (this.isMockMode()) {
+      try {
+        normalizeAddress(address);
+      } catch {
+        throw new NotFoundException("Profile not found");
+      }
+      const { profile, cacheVersion } = await this.getMockPublicProfile(PUBLIC_PROFILE_SLUG);
+      return { profile, cacheVersion, canonicalSlug: PUBLIC_PROFILE_SLUG };
+    }
+
     const checksum = normalizeAddress(address);
     const wallet = await this.prisma.wallet.findFirst({
       where: { address: checksum },

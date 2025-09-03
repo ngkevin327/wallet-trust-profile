@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Query, Res, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { Response } from "express";
 import { RateLimitGuard } from "../common/guards/rate-limit.guard";
@@ -12,13 +12,22 @@ export class PublicProfilesController {
 
   @Get("by-wallet/:address")
   @ApiOperation({ summary: "Resolve profile by wallet address" })
-  async getByWallet(@Param("address") address: string, @Res({ passthrough: true }) res: Response) {
+  async getByWallet(
+    @Param("address") address: string,
+    @Query("redirect") redirect: string | undefined,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const { profile, cacheVersion, canonicalSlug } =
       await this.profilesService.getPublicProfileByWallet(address);
     if (cacheVersion != null) {
       res.setHeader("X-Profile-Cache-Version", String(cacheVersion));
     }
     res.setHeader("X-Canonical-Slug", canonicalSlug);
+    if (redirect === "true") {
+      const base = process.env.PUBLIC_WEB_URL ?? "http://localhost:3000";
+      res.redirect(302, `${base}/u/${canonicalSlug}`);
+      return;
+    }
     return profile;
   }
 
