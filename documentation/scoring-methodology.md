@@ -52,3 +52,15 @@ Profile owners can call `GET /v1/me/profile/score-breakdown` for the latest snap
 ## Badges
 
 Badges are evaluated from the same scoring result using `config/badges/v1.yaml`. Awards are stored in `badge_awards` and revoked when criteria are no longer met after a re-index.
+
+## DAO contribution inference
+
+DAO inflows are aggregated from registry treasury addresses (see `documentation/dao-registry-curation.md`). Each row includes a **confidence** level:
+
+| Confidence | Meaning |
+|------------|---------|
+| `direct_treasury` | Inbound transfer from a known DAO treasury address |
+| `router_inferred` | Inbound via a known router contract; DAO inferred from context |
+| `low_confidence` | Weak attribution; down-weighted in contribution scoring |
+
+Low-confidence rows are shown in the UI with an “Inferred” label. Verified treasury matches display “Verified treasury”. Router and low-confidence attributions may be incomplete when registry coverage is limited.
