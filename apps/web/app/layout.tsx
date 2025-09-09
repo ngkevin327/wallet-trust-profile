@@ -1,11 +1,8 @@
-import type { Metadata } from "next";
 import { Providers } from "./providers";
+import { defaultMetadata } from "../lib/seo/metadata";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "Onchain Reputation",
-  description: "Professional reputation profiles built from verifiable wallet activity",
-};
+export const metadata = defaultMetadata;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
