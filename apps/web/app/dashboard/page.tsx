@@ -1,12 +1,11 @@
 "use client";
 
 import type { ProfileOwnerDto } from "@onchain-reputation/shared";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ScoreCards } from "../../components/dashboard/score-cards";
+import { ScoreHero } from "../../components/dashboard/score-hero";
 import { api } from "../../lib/api/client";
 import { getAccessToken } from "../../lib/auth/token";
-import { LastUpdated } from "../../components/profile/last-updated";
-import { TrustSignalsPanel } from "../../components/profile/trust-signals";
 
 export default function DashboardPage() {
   const [profile, setProfile] = useState<ProfileOwnerDto | null>(null);
@@ -19,35 +18,13 @@ export default function DashboardPage() {
   }, []);
 
   if (!profile) {
-    return (
-      <main className="mx-auto max-w-2xl px-6 py-12">
-        <p className="text-slate-500">Loading dashboard…</p>
-      </main>
-    );
+    return <p className="text-slate-500">Loading dashboard…</p>;
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
-      <h1 className="text-2xl font-semibold">{profile.displayName ?? profile.slug}</h1>
-      <LastUpdated iso={profile.lastUpdatedAt ?? profile.lastUpdated} />
-      <p className="mt-2 text-sm text-slate-600">Status: {profile.status}</p>
-      {profile.trustSignals && profile.trustSignals.length > 0 ? (
-        <TrustSignalsPanel signals={profile.trustSignals} />
-      ) : null}
-      <div className="mt-6 flex gap-4">
-        <Link
-          href={`/profiles/${profile.slug}`}
-          className="text-sm font-medium text-brand-700 hover:underline"
-        >
-          View public profile
-        </Link>
-        <Link
-          href="/settings/wallets"
-          className="text-sm font-medium text-brand-700 hover:underline"
-        >
-          Manage wallets
-        </Link>
-      </div>
-    </main>
+    <div className="mx-auto max-w-4xl space-y-6">
+      <ScoreHero reputationIndex={profile.reputationIndex} status={profile.status} />
+      <ScoreCards dimensions={profile.dimensions} />
+    </div>
   );
 }
