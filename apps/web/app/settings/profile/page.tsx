@@ -4,6 +4,7 @@ import type { ProfileOwnerDto } from "@onchain-reputation/shared";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SlugInput } from "../../../components/settings/slug-input";
+import { VisibilityToggle } from "../../../components/settings/visibility-toggle";
 import { api } from "../../../lib/api/client";
 import { updateProfile } from "../../../lib/api/profile";
 import { getAccessToken } from "../../../lib/auth/token";
@@ -41,6 +42,9 @@ export default function ProfileSettingsPage() {
     try {
       await updateProfile({ displayName, slug, visibility });
       setMessage("Profile updated");
+      setProfile((prev) =>
+        prev ? { ...prev, displayName, slug, visibility } : prev,
+      );
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Update failed");
     } finally {
@@ -63,13 +67,14 @@ export default function ProfileSettingsPage() {
       </Link>
       <h1 className="mt-6 text-2xl font-semibold">Profile settings</h1>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-6">
         <div>
           <label className="block text-sm font-medium text-slate-700" htmlFor="display-name">
             Display name
           </label>
           <input
             id="display-name"
+            maxLength={128}
             className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
@@ -78,31 +83,18 @@ export default function ProfileSettingsPage() {
 
         <SlugInput value={slug} onChange={setSlug} currentSlug={profile.slug} />
 
-        <div>
-          <label className="block text-sm font-medium text-slate-700" htmlFor="visibility">
-            Visibility
-          </label>
-          <select
-            id="visibility"
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value as "public" | "private")}
-          >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-          </select>
-        </div>
+        <VisibilityToggle value={visibility} onChange={setVisibility} />
 
         <button
           type="button"
           onClick={() => void handleSave()}
           disabled={saving}
-          className="rounded-md bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800 disabled:opacity-50"
+          className="ui-btn ui-btn-primary disabled:opacity-50"
         >
           {saving ? "Saving…" : "Save changes"}
         </button>
 
-        {message ? <p className="text-sm text-slate-600">{message}</p> : null}
+        {message ? <p className="text-sm text-slate-600" role="status">{message}</p> : null}
       </div>
     </main>
   );
