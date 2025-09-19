@@ -55,6 +55,20 @@ export class ProfileProjector {
       categoryCounts.set(fact.category, (categoryCounts.get(fact.category) ?? 0) + 1);
     }
 
+    const resumeTimeline = [...params.facts]
+      .sort((a, b) => b.blockTime.getTime() - a.blockTime.getTime())
+      .slice(0, 20)
+      .map((fact) => ({
+        date: fact.blockTime.toISOString(),
+        label: fact.category.replace(/_/g, " "),
+        protocol: fact.protocolId,
+        category: fact.category,
+        explorerUrl:
+          fact.chainId === 8453
+            ? `https://basescan.org/tx/${fact.txHash}`
+            : `https://etherscan.io/tx/${fact.txHash}`,
+      }));
+
     const payload: ProfileProjectionDto = {
       slug: profile.slug,
       displayName: profile.displayName,
@@ -87,6 +101,7 @@ export class ProfileProjector {
           .slice(0, 5)
           .map(([category, count]) => ({ category, count })),
       },
+      resumeTimeline,
       scoringVersion: params.scoringVersion,
       lastUpdatedAt: params.lastUpdatedAt.toISOString(),
       publicCacheVersion: previousVersion + 1,

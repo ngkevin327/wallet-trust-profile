@@ -33,6 +33,7 @@ export type ProfilePublicDto = {
   lastUpdated: string | null;
   lastUpdatedAt?: string | null;
   activitySummary?: ActivitySummaryDto | null;
+  resumeTimeline?: import("./resume-event.dto").ResumeEventDto[];
 };
 
 export type ProfileOwnerDto = ProfilePublicDto & {

@@ -5,6 +5,7 @@ import type {
   ProfileStatusDto,
   ProfileVisibilityDto,
 } from "./profile.dto";
+import type { ResumeEventDto } from "./resume-event.dto";
 import type { TrustSignalDto } from "./trust-signal.dto";
 
 export type ResumeSummaryDto = {
@@ -23,6 +24,7 @@ export type ProfileProjectionDto = {
   trustSignals: TrustSignalDto[];
   daoContributions: DaoContributionDto[];
   resumeSummary: ResumeSummaryDto | null;
+  resumeTimeline: ResumeEventDto[];
   scoringVersion: string;
   lastUpdatedAt: string;
   publicCacheVersion: number;

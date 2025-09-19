@@ -7,4 +7,5 @@ export * from "./dto/trust-signal.dto";
 export * from "./dto/badge.dto";
 export * from "./dto/dao-contribution.dto";
 export * from "./dto/profile-projection.dto";
+export * from "./dto/resume-event.dto";
 export * from "./utils/address";

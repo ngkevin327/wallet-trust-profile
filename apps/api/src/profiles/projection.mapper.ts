@@ -26,6 +26,7 @@ export function mapProjectionToPublic(payload: ProfileProjectionDto): ProfilePub
           })),
         }
       : null,
+    resumeTimeline: payload.resumeTimeline,
   };
 }
 
