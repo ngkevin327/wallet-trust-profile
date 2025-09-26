@@ -33,6 +33,7 @@ export function ConnectWalletButton() {
       router.push("/onboarding/indexing");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign-in failed");
+      console.error("[siwe]", err);
     } finally {
       setIsSigningIn(false);
     }
@@ -49,7 +50,8 @@ export function ConnectWalletButton() {
         type="button"
         onClick={handleConnect}
         disabled={isConnecting}
-        className="rounded-lg bg-brand-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-500 disabled:opacity-60"
+        className="ui-btn ui-btn-primary"
+        aria-label="Connect wallet"
       >
         {isConnecting ? "Connecting…" : "Connect wallet"}
       </button>
