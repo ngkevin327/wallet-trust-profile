@@ -12,7 +12,9 @@ export function LandingHero() {
         profile — without custody or manual résumés.
       </p>
       <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row md:justify-start">
-        <ConnectWalletButton />
+        <div id="connect">
+          <ConnectWalletButton />
+        </div>
         <a
           href="/how-it-works"
           className="ui-btn ui-btn-secondary"
