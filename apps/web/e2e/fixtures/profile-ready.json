@@ -1,0 +1,35 @@
+{
+  "id": "c0000000-0000-4000-8000-000000000001",
+  "userId": "a0000000-0000-4000-8000-000000000001",
+  "slug": "demo-builder",
+  "displayName": "Demo Builder",
+  "visibility": "public",
+  "status": "active",
+  "publicCacheVersion": 1,
+  "reputationIndex": 72,
+  "dimensions": {
+    "governance": 65,
+    "contribution": 80,
+    "paymentReliability": 74,
+    "protocolParticipation": 58
+  },
+  "badges": [
+    { "code": "active-voter", "title": "Active Voter", "earnedAt": "2024-06-01T00:00:00.000Z" },
+    { "code": "dao-contributor", "title": "DAO Contributor", "earnedAt": "2024-06-02T00:00:00.000Z" }
+  ],
+  "daoContributions": [],
+  "trustSignals": [],
+  "resumeTimeline": [],
+  "scoringVersion": "1.0.0",
+  "lastUpdated": "2024-06-01T12:00:00.000Z",
+  "lastUpdatedAt": "2024-06-01T12:00:00.000Z",
+  "wallets": [
+    {
+      "id": "b0000000-0000-4000-8000-000000000001",
+      "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+      "chainScope": ["eip155:1", "eip155:8453"],
+      "isPrimary": true,
+      "linkedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ]
+}
