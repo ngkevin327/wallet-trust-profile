@@ -257,6 +257,7 @@ export class ProfilesService {
       badges: [{ code: "active-voter", title: "Active Voter", earnedAt: now }],
       trustSignals: [],
       daoContributions: [],
+      resumeTimeline: [],
       scoringVersion: "1.0.0",
       lastUpdated: now,
       lastUpdatedAt: now,
