@@ -27,7 +27,7 @@ export function ResumeTimeline({ events, activitySummarized }: Props) {
           High-volume wallet — timeline shows the most recent indexed events.
         </p>
       ) : null}
-      <ol className="mt-4 space-y-4 border-l-2 border-slate-200 pl-4">
+      <ol className="mt-4 space-y-3 border-l-2 border-slate-200 pl-4 sm:space-y-4">
         {visible.map((event, i) => (
           <li key={`${event.date}-${i}`} className="relative">
             <span className="absolute -left-[1.35rem] top-1 h-2.5 w-2.5 rounded-full bg-brand-700" />
