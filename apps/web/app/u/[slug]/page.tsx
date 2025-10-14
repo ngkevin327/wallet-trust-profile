@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PublicProfileLayout } from "../../../components/public/public-profile-layout";
+import { PublicScoreSummary } from "../../../components/public/public-score-summary";
 import { fetchPublicProfile } from "../../../lib/api/public-profile";
 
 type PageProps = {
@@ -16,7 +17,7 @@ export default async function PublicProfilePage({ params }: PageProps) {
 
   return (
     <PublicProfileLayout profile={profile}>
-      <p className="text-sm text-slate-500">Public on-chain reputation profile</p>
+      <PublicScoreSummary profile={profile} />
     </PublicProfileLayout>
   );
 }
