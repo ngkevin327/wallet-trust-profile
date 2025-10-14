@@ -18,14 +18,28 @@ export const defaultMetadata: Metadata = {
 export function profileMetadata(params: {
   displayName: string | null;
   slug: string;
+  reputationIndex?: number | null;
+  topBadge?: string | null;
 }): Metadata {
   const title = params.displayName ?? params.slug;
+  const description =
+    params.reputationIndex != null
+      ? `${title} has a reputation index of ${params.reputationIndex} on Onchain Reputation.`
+      : `On-chain reputation profile for ${title}`;
+
   return {
     title,
-    description: `On-chain reputation profile for ${title}`,
+    description,
     openGraph: {
       title: `${title} | ${siteName}`,
-      description: `Reputation index and activity summary for @${params.slug}`,
+      description,
+      type: "profile",
+      url: `/u/${params.slug}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${siteName}`,
+      description,
     },
   };
 }
