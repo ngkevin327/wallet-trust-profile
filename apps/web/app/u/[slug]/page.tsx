@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicProfileLayout } from "../../../components/public/public-profile-layout";
 import { PublicScoreSummary } from "../../../components/public/public-score-summary";
+import { VisitorCta } from "../../../components/public/visitor-cta";
 import { fetchPublicProfile } from "../../../lib/api/public-profile";
 import { profileMetadata } from "../../../lib/seo/metadata";
 
@@ -31,8 +32,10 @@ export default async function PublicProfilePage({ params }: PageProps) {
   }
 
   return (
-    <PublicProfileLayout profile={profile}>
-      <PublicScoreSummary profile={profile} />
+    <PublicProfileLayout profile={profile} footer={<VisitorCta profileSlug={profile.slug} />}>
+      <div className="pb-24">
+        <PublicScoreSummary profile={profile} />
+      </div>
     </PublicProfileLayout>
   );
 }
