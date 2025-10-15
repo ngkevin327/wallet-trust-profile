@@ -6,6 +6,8 @@ import { VisitorCta } from "../../../components/public/visitor-cta";
 import { fetchPublicProfile } from "../../../lib/api/public-profile";
 import { profileMetadata } from "../../../lib/seo/metadata";
 
+export const revalidate = 300;
+
 type PageProps = {
   params: { slug: string };
 };

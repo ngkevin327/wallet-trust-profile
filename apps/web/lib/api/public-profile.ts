@@ -5,12 +5,24 @@ const API_BASE =
 
 export const PUBLIC_PROFILE_REVALIDATE = Number(process.env.PUBLIC_PROFILE_REVALIDATE ?? 300);
 
-export async function fetchPublicProfile(slug: string): Promise<ProfilePublicDto | null> {
+export type FetchPublicProfileOptions = {
+  cacheVersion?: number;
+};
+
+export async function fetchPublicProfile(
+  slug: string,
+  options?: FetchPublicProfileOptions,
+): Promise<ProfilePublicDto | null> {
+  const tags = [`profile:public:${slug}`];
+  if (options?.cacheVersion != null) {
+    tags.push(`profile:public:${slug}:v${options.cacheVersion}`);
+  }
+
   const res = await fetch(`${API_BASE}/v1/profiles/${encodeURIComponent(slug)}`, {
     headers: { Accept: "application/json" },
     next: {
       revalidate: PUBLIC_PROFILE_REVALIDATE,
-      tags: [`profile:public:${slug}`],
+      tags,
     },
   });
 
