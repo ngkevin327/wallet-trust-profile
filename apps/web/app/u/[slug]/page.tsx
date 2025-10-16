@@ -5,6 +5,7 @@ import { PublicScoreSummary } from "../../../components/public/public-score-summ
 import { VisitorCta } from "../../../components/public/visitor-cta";
 import { fetchPublicProfile } from "../../../lib/api/public-profile";
 import { profileMetadata } from "../../../lib/seo/metadata";
+import { isValidPublicSlug } from "../../../lib/slug";
 
 export const revalidate = 300;
 
@@ -13,6 +14,9 @@ type PageProps = {
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (!isValidPublicSlug(params.slug)) {
+    return { title: "Profile not found" };
+  }
   const profile = await fetchPublicProfile(params.slug.toLowerCase());
   if (!profile) {
     return { title: "Profile not found" };
@@ -26,6 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PublicProfilePage({ params }: PageProps) {
+  if (!isValidPublicSlug(params.slug)) {
+    notFound();
+  }
+
   const slug = params.slug.toLowerCase();
   const profile = await fetchPublicProfile(slug);
 
