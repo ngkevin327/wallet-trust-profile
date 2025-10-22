@@ -1,0 +1,59 @@
+{
+  "slug": "demo-builder",
+  "displayName": "Demo Builder",
+  "visibility": "public",
+  "status": "active",
+  "reputationIndex": 72,
+  "dimensions": {
+    "governance": 65,
+    "contribution": 80,
+    "paymentReliability": 74,
+    "protocolParticipation": 58
+  },
+  "badges": [
+    { "code": "active-voter", "title": "Active Voter", "earnedAt": "2024-06-01T00:00:00.000Z" },
+    { "code": "dao-contributor", "title": "DAO Contributor", "earnedAt": "2024-06-02T00:00:00.000Z" }
+  ],
+  "daoContributions": [
+    {
+      "daoSlug": "example-dao",
+      "daoName": "Example DAO",
+      "role": "contributor",
+      "summary": "Treasury review and grant coordination",
+      "evidenceUrl": null
+    }
+  ],
+  "trustSignals": [
+    {
+      "code": "consistent_voter",
+      "label": "Consistent voter",
+      "severity": "low",
+      "reason": "Regular governance participation over the last 90 days.",
+      "confidence": 0.82
+    },
+    {
+      "code": "elevated_risk",
+      "label": "Elevated risk pattern",
+      "severity": "high",
+      "reason": "Unusual outflow pattern detected in the last 30 days.",
+      "confidence": 0.71
+    }
+  ],
+  "resumeTimeline": [
+    {
+      "id": "evt-1",
+      "occurredAt": "2024-05-01T00:00:00.000Z",
+      "title": "Joined Example DAO",
+      "category": "dao",
+      "summary": "Contributor role"
+    }
+  ],
+  "scoringVersion": "1.0.0",
+  "lastUpdated": "2024-06-01T12:00:00.000Z",
+  "lastUpdatedAt": "2024-06-01T12:00:00.000Z",
+  "activitySummary": {
+    "activitySummarized": true,
+    "totalTransactions": 120,
+    "topProtocols": [{ "category": "defi", "count": 45 }]
+  }
+}

@@ -17,5 +17,9 @@ export default defineConfig({
         command: "pnpm --filter @onchain-reputation/web dev",
         url: "http://localhost:3000",
         reuseExistingServer: true,
+        env: {
+          ...process.env,
+          E2E_PUBLIC_PROFILE_FIXTURES: "true",
+        },
       },
 });
