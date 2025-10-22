@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PublicProfileLayout } from "../../../components/public/public-profile-layout";
 import { PublicScoreSummary } from "../../../components/public/public-score-summary";
+import { ProfileFooter } from "../../../components/profile/profile-footer";
 import { VisitorCta } from "../../../components/public/visitor-cta";
 import { fetchPublicProfile } from "../../../lib/api/public-profile";
 import { profileMetadata } from "../../../lib/seo/metadata";
@@ -29,22 +30,39 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
+function logInvalidSlugAttempt(raw: string): void {
+  if (process.env.NODE_ENV === "development") {
+    console.debug("[public-profile] invalid slug rejected before API", { slug: raw });
+  }
+}
+
 export default async function PublicProfilePage({ params }: PageProps) {
-  if (!isValidPublicSlug(params.slug)) {
+  const rawSlug = params.slug;
+
+  if (!isValidPublicSlug(rawSlug)) {
+    logInvalidSlugAttempt(rawSlug);
     notFound();
   }
 
-  const slug = params.slug.toLowerCase();
+  const slug = rawSlug.toLowerCase();
   const profile = await fetchPublicProfile(slug);
 
   if (!profile) {
     notFound();
   }
 
+  const hideFooter = profile.status === "failed";
+
   return (
     <PublicProfileLayout profile={profile} footer={<VisitorCta profileSlug={profile.slug} />}>
       <div className="pb-24">
         <PublicScoreSummary profile={profile} />
+        <ProfileFooter
+          scoringVersion={profile.scoringVersion}
+          lastUpdated={profile.lastUpdated}
+          lastUpdatedAt={profile.lastUpdatedAt}
+          hideWhenIndexingFailed={hideFooter}
+        />
       </div>
     </PublicProfileLayout>
   );
