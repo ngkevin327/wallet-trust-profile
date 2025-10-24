@@ -1,17 +1,12 @@
 "use client";
 
 import type { ProfileScoreDimensionsDto } from "@onchain-reputation/shared";
+import { labelForDimension } from "../../lib/copy/scoring-labels";
+import { Tooltip } from "../ui/tooltip";
 
 type Props = {
   dimensions: ProfileScoreDimensionsDto | null;
   onSelectDimension?: (key: string) => void;
-};
-
-const labels: Record<string, string> = {
-  governance: "Governance",
-  contribution: "Contribution",
-  paymentReliability: "Payment reliability",
-  protocolParticipation: "Protocol participation",
 };
 
 function band(score: number): string {
@@ -33,28 +28,35 @@ export function ScoreCards({ dimensions, onSelectDimension }: Props) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      {entries.map(([key, score]) => (
-        <button
-          key={key}
-          type="button"
-          onClick={() => onSelectDimension?.(key)}
-          className="ui-card text-left transition hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
-          aria-label={`${labels[key] ?? key}: ${score} out of 100`}
-        >
-          <p className="text-sm font-medium text-slate-600">{labels[key] ?? key}</p>
-          <p className="mt-1 text-2xl font-semibold text-slate-900">{score}</p>
-          <div
-            className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100"
-            role="progressbar"
-            aria-valuenow={score}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`${labels[key] ?? key} score`}
+      {entries.map(([key, score]) => {
+        const label = labelForDimension(key);
+        return (
+          <button
+            key={key}
+            type="button"
+            onClick={() => onSelectDimension?.(key)}
+            className="ui-card text-left transition hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            aria-label={`${label.title}: ${score} out of 100`}
           >
-            <div className={`h-full ${band(score)}`} style={{ width: `${score}%` }} />
-          </div>
-        </button>
-      ))}
+            <div className="flex items-start gap-1">
+              <p className="text-sm font-medium text-slate-900">{label.title}</p>
+              <Tooltip label={`About ${label.title}`} content={label.tooltip} />
+            </div>
+            <p className="mt-0.5 text-xs text-slate-500">{label.shortDescription}</p>
+            <p className="mt-1 text-2xl font-semibold text-slate-900">{score}</p>
+            <div
+              className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100"
+              role="progressbar"
+              aria-valuenow={score}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`${label.title} score`}
+            >
+              <div className={`h-full ${band(score)}`} style={{ width: `${score}%` }} />
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }
