@@ -10,6 +10,7 @@ import { ScoreCards } from "../../components/dashboard/score-cards";
 import { ScoreDrawer } from "../../components/dashboard/score-drawer";
 import { ScoreHero } from "../../components/dashboard/score-hero";
 import { ShareModal } from "../../components/dashboard/share-modal";
+import { ProfileFooter } from "../../components/profile/profile-footer";
 import { TrustSignalsPanel } from "../../components/profile/trust-signals";
 import { api } from "../../lib/api/client";
 import { getAccessToken } from "../../lib/auth/token";
@@ -76,6 +77,13 @@ export default function DashboardPage() {
       >
         View full score breakdown
       </button>
+
+      <ProfileFooter
+        scoringVersion={profile.scoringVersion}
+        lastUpdated={profile.lastUpdated}
+        lastUpdatedAt={profile.lastUpdatedAt}
+        hideWhenIndexingFailed={profile.status === "failed"}
+      />
 
       <ScoreDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <ShareModal open={shareOpen} slug={profile.slug} onClose={() => setShareOpen(false)} />
