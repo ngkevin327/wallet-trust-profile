@@ -1,4 +1,5 @@
 export * from "./chains";
+export * from "./entitlements";
 export * from "./api-routes";
 export * from "./dto/wallet.dto";
 export * from "./dto/profile.dto";
