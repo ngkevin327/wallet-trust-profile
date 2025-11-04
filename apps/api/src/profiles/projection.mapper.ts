@@ -32,13 +32,20 @@ export function mapProjectionToPublic(payload: ProfileProjectionDto): ProfilePub
 
 export function mapProjectionToOwner(
   payload: ProfileProjectionDto,
-  profile: Profile & { user?: { wallets: Wallet[] } },
+  profile: Profile & { user?: { wallets: Wallet[] }; privateMetrics?: unknown },
+  options?: { includePrivateMetrics?: boolean },
 ): ProfileOwnerDto {
+  const privateMetrics =
+    options?.includePrivateMetrics && profile.privateMetrics
+      ? (profile.privateMetrics as import("@onchain-reputation/shared").PrivateMetricsDto)
+      : undefined;
+
   return {
     ...mapProjectionToPublic(payload),
     id: profile.id,
     userId: profile.userId,
     publicCacheVersion: payload.publicCacheVersion,
+    privateMetrics,
     wallets: (profile.user?.wallets ?? []).map((w) => ({
       id: w.id,
       address: w.address,

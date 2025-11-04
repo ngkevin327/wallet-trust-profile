@@ -15,6 +15,7 @@ export type ActivitySummaryDto = {
   topProtocols: { category: string; count: number }[];
 };
 
+import type { PrivateMetricsDto } from "./private-metrics.dto";
 import type { BadgeDto } from "./badge.dto";
 import type { DaoContributionDto } from "./dao-contribution.dto";
 import type { TrustSignalDto } from "./trust-signal.dto";
@@ -41,6 +42,7 @@ export type ProfileOwnerDto = ProfilePublicDto & {
   userId: string;
   publicCacheVersion: number;
   wallets: import("./wallet.dto").WalletDto[];
+  privateMetrics?: PrivateMetricsDto | null;
 };
 
 export type UpdateProfileRequestDto = {

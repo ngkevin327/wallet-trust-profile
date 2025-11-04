@@ -7,6 +7,7 @@ import {
   type ProfileOwnerDto,
   type ProfilePublicDto,
 } from "@onchain-reputation/shared";
+import { EntitlementsService } from "../billing/entitlements.service";
 import { IndexerOrchestrator } from "../indexer/indexer.orchestrator";
 import { PrismaService } from "../prisma/prisma.service";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
@@ -31,6 +32,7 @@ export class ProfilesService {
     private readonly indexerOrchestrator: IndexerOrchestrator,
     private readonly prisma: PrismaService,
     private readonly cache: CacheService,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   isMockMode(): boolean {
@@ -111,7 +113,15 @@ export class ProfilesService {
 
     if (full.projection) {
       const payload = full.projection.payload as Parameters<typeof mapProjectionToOwner>[0];
-      return mapProjectionToOwner(payload, { ...full, user: full.user ?? undefined });
+      const includePrivate = await this.entitlements.hasEntitlement(
+        targetUserId,
+        "private_scores",
+      );
+      return mapProjectionToOwner(
+        payload,
+        { ...full, user: full.user ?? undefined },
+        { includePrivateMetrics: includePrivate },
+      );
     }
 
     if (this.isMockMode()) {

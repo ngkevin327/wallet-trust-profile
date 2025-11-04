@@ -241,6 +241,7 @@ model Profile {
   visibility          ProfileVisibility @default(public)
   status              ProfileStatus     @default(created)
   publicCacheVersion  Int               @default(0) @map("public_cache_version")
+  privateMetrics      Json?             @map("private_metrics") @db.JsonB
 
   user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   projection  ProfileProjection?

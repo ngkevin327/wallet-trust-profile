@@ -69,6 +69,20 @@ export class ProfileProjector {
             : `https://etherscan.io/tx/${fact.txHash}`,
       }));
 
+    const privateMetrics = {
+      dimensions: Object.entries(dimensions).map(([key, score]) => ({
+        key,
+        score: score ?? 0,
+        factors: [],
+      })),
+      computedAt: params.lastUpdatedAt.toISOString(),
+    };
+
+    await this.prisma.profile.update({
+      where: { id: profile.id },
+      data: { privateMetrics },
+    });
+
     const payload: ProfileProjectionDto = {
       slug: profile.slug,
       displayName: profile.displayName,

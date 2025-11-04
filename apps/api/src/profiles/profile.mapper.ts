@@ -1,6 +1,7 @@
 import type {
   BadgeDto,
   DaoContributionDto,
+  PrivateMetricsDto,
   ProfileOwnerDto,
   ProfilePublicDto,
   ProfileProjectionDto,
@@ -64,12 +65,19 @@ export function mapOwnerProfile(
     badges: [],
     trustSignals: [],
   },
+  options?: { includePrivateMetrics?: boolean },
 ): ProfileOwnerDto {
+  const privateMetrics =
+    options?.includePrivateMetrics && profile.privateMetrics
+      ? (profile.privateMetrics as PrivateMetricsDto)
+      : undefined;
+
   return {
     ...mapPublicProfile(profile, lastUpdatedAt, score),
     id: profile.id,
     userId: profile.userId,
     publicCacheVersion: profile.publicCacheVersion,
+    privateMetrics,
     wallets: (profile.user?.wallets ?? []).map((w) => ({
       id: w.id,
       address: w.address,
@@ -83,7 +91,13 @@ export function mapOwnerProfile(
 export function mapProjectionPayloadToOwner(
   payload: ProfileProjectionDto,
   profile: ProfileWithRelations,
+  options?: { includePrivateMetrics?: boolean },
 ): ProfileOwnerDto {
+  const privateMetrics =
+    options?.includePrivateMetrics && profile.privateMetrics
+      ? (profile.privateMetrics as PrivateMetricsDto)
+      : undefined;
+
   return {
     slug: payload.slug,
     displayName: payload.displayName,
@@ -100,6 +114,7 @@ export function mapProjectionPayloadToOwner(
     id: profile.id,
     userId: profile.userId,
     publicCacheVersion: payload.publicCacheVersion,
+    privateMetrics,
     wallets: (profile.user?.wallets ?? []).map((w) => ({
       id: w.id,
       address: w.address,
