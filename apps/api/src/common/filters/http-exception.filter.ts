@@ -27,8 +27,27 @@ export class HttpExceptionFilter implements ExceptionFilter {
       } else if (typeof body === "object" && body !== null && "message" in body) {
         const msg = (body as { message: string | string[] }).message;
         message = Array.isArray(msg) ? msg.join(", ") : msg;
+        const extra = body as Record<string, unknown>;
+        if (typeof extra.code === "string") {
+          code = extra.code;
+        }
+        if (extra.feature) {
+          response.status(status).json({
+            statusCode: status,
+            code,
+            message,
+            feature: extra.feature,
+            upgradeUrl: extra.upgradeUrl,
+            requestId: request.requestId,
+            timestamp: new Date().toISOString(),
+            path: request.url,
+          });
+          return;
+        }
       }
-      code = this.codeFromStatus(status);
+      if (code === "ERROR") {
+        code = this.codeFromStatus(status);
+      }
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       if (exception.code === "P2002") {
         status = HttpStatus.CONFLICT;
@@ -65,6 +84,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return "NOT_FOUND";
       case HttpStatus.CONFLICT:
         return "CONFLICT";
+      case HttpStatus.PAYMENT_REQUIRED:
+        return "PAYMENT_REQUIRED";
+      case 429:
+        return "RATE_LIMITED";
       default:
         return "ERROR";
     }
