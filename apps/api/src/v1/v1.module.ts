@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { BillingModule } from "../billing/billing.module";
 import { AuthModule } from "../auth/auth.module";
 import { RegistryModule } from "../registry/registry.module";
 import { ProfilesModule } from "../profiles/profiles.module";

@@ -6,6 +6,11 @@ export type ApiEnv = {
   jwtIssuer: string;
   jwtAudience: string;
   cacheTtlSeconds: number;
+  stripeSecretKey?: string;
+  stripeWebhookSecret?: string;
+  stripePremiumPriceId?: string;
+  stripeSuccessUrl?: string;
+  stripeCancelUrl?: string;
 };
 
 function requireEnv(name: string): string {
@@ -31,5 +36,10 @@ export function loadApiEnv(): ApiEnv {
     jwtIssuer: requireEnv("JWT_ISSUER"),
     jwtAudience: requireEnv("JWT_AUDIENCE"),
     cacheTtlSeconds: Number(process.env.CACHE_TTL_SECONDS ?? 600),
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    stripePremiumPriceId: process.env.STRIPE_PREMIUM_PRICE_ID,
+    stripeSuccessUrl: process.env.STRIPE_SUCCESS_URL ?? "http://localhost:3000/pricing?success=1",
+    stripeCancelUrl: process.env.STRIPE_CANCEL_URL ?? "http://localhost:3000/pricing?canceled=1",
   };
 }
