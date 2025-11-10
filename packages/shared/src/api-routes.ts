@@ -16,6 +16,15 @@ export const API_ROUTES = {
     wallets: `/${API_VERSION}/me/wallets`,
     refresh: `/${API_VERSION}/me/profile/refresh`,
     exports: `/${API_VERSION}/me/exports`,
+    scoresHistory: `/${API_VERSION}/me/scores/history`,
+  },
+  billing: {
+    checkout: `/${API_VERSION}/billing/checkout`,
+    portal: `/${API_VERSION}/billing/portal`,
+    subscription: `/${API_VERSION}/billing/subscription`,
+  },
+  verify: {
+    export: (exportId: string) => `/${API_VERSION}/verify/${exportId}`,
   },
   profiles: {
     bySlug: (slug: string) => `/${API_VERSION}/profiles/${slug}`,
