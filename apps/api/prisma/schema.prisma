@@ -49,6 +49,14 @@ model User {
   @@map("users")
 }
 
+model StripeWebhookEvent {
+  id          String   @id @db.VarChar(255)
+  type        String   @db.VarChar(128)
+  processedAt DateTime @default(now()) @map("processed_at") @db.Timestamptz
+
+  @@map("stripe_webhook_events")
+}
+
 model Subscription {
   id                     String             @id @default(uuid()) @db.Uuid
   userId                 String             @unique @map("user_id") @db.Uuid
