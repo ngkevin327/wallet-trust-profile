@@ -257,6 +257,33 @@ model Profile {
   @@map("profiles")
 }
 
+enum ExportFormat {
+  json
+  pdf
+}
+
+enum ExportStatus {
+  pending
+  completed
+  failed
+}
+
+model Export {
+  id               String       @id @default(uuid()) @db.Uuid
+  userId           String       @map("user_id") @db.Uuid
+  format           ExportFormat
+  status           ExportStatus @default(pending)
+  artifactKey      String?      @map("artifact_key") @db.VarChar(512)
+  verificationUrl  String?      @map("verification_url") @db.VarChar(512)
+  signature        String?      @db.VarChar(128)
+  payloadSnapshot  Json?        @map("payload_snapshot") @db.JsonB
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  completedAt      DateTime?    @map("completed_at") @db.Timestamptz
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("exports")
+}
+
 model ProfileProjection {
   profileId      String   @id @map("profile_id") @db.Uuid
   payload        Json     @db.JsonB
