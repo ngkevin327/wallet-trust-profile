@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>{{displayName}} — Onchain Reputation</title>
+  <style>
+    body { font-family: system-ui, sans-serif; color: #0f172a; margin: 40px; }
+    h1 { font-size: 28px; margin-bottom: 4px; }
+    .muted { color: #64748b; font-size: 14px; }
+    .score { font-size: 48px; font-weight: 700; color: #4f46e5; margin: 24px 0; }
+    .badge { display: inline-block; margin: 4px 8px 4px 0; padding: 6px 12px; background: #f1f5f9; border-radius: 6px; }
+    footer { margin-top: 48px; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>{{displayName}}</h1>
+  <p class="muted">@{{slug}} · Scoring v{{scoringVersion}}</p>
+  <p class="score">{{reputationIndex}}</p>
+  <p>Reputation index</p>
+  <h2>Badges</h2>
+  {{#each badges}}
+    <span class="badge">{{title}}</span>
+  {{/each}}
+  <p class="muted">Verify: {{verificationUrl}}</p>
+  <footer>Generated at {{generatedAt}}</footer>
+</body>
+</html>

@@ -34,7 +34,9 @@
     "siwe": "^2.3.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "stripe": "^17.5.0"
+    "stripe": "^17.5.0",
+    "handlebars": "^4.7.8",
+    "pdfkit": "^0.15.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.9",

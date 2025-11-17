@@ -4,6 +4,7 @@ import { EntitlementsService } from "../billing/entitlements.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProfilesService } from "../profiles/profiles.service";
 import { ExportSignerService } from "./export-signer.service";
+import { PdfGenerator } from "./pdf.generator";
 
 const DAILY_EXPORT_LIMIT = Number(process.env.EXPORT_DAILY_LIMIT ?? 10);
 
@@ -14,6 +15,7 @@ export class ExportsService {
     private readonly profiles: ProfilesService,
     private readonly entitlements: EntitlementsService,
     private readonly signer: ExportSignerService,
+    private readonly pdf: PdfGenerator,
   ) {}
 
   async createExport(userId: string, format: "json" | "pdf") {
@@ -55,11 +57,21 @@ export class ExportsService {
     const signature = this.signer.sign(record.id, snapshot);
     const payload = { ...snapshot, verificationUrl, signature };
 
+    let artifactKey = `exports/${record.id}.json`;
+
+    if (format === "pdf") {
+      artifactKey = await this.pdf.generate({
+        exportId: record.id,
+        profile,
+        verificationUrl,
+      });
+    }
+
     const updated = await this.prisma.export.update({
       where: { id: record.id },
       data: {
         status: ExportStatus.completed,
-        artifactKey: `exports/${record.id}.${format}`,
+        artifactKey,
         verificationUrl,
         signature,
         payloadSnapshot: payload,
