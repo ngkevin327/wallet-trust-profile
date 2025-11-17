@@ -10,6 +10,8 @@ import { WalletsModule } from "../wallets/wallets.module";
 
 @Module({
   imports: [
+    BillingModule,
+    ExportsModule,
     AuthModule,
     RegistryModule,
     UsersModule,

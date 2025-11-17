@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, TooManyRequestsException } from "@nestjs/common";
 import { ExportFormat, ExportStatus } from "@prisma/client";
-import { createHmac } from "node:crypto";
 import { EntitlementsService } from "../billing/entitlements.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { ProfilesService } from "../profiles/profiles.service";
+import { ExportSignerService } from "./export-signer.service";
 
 const DAILY_EXPORT_LIMIT = Number(process.env.EXPORT_DAILY_LIMIT ?? 10);
 
@@ -13,12 +13,8 @@ export class ExportsService {
     private readonly prisma: PrismaService,
     private readonly profiles: ProfilesService,
     private readonly entitlements: EntitlementsService,
+    private readonly signer: ExportSignerService,
   ) {}
-
-  private sign(exportId: string, payload: unknown): string {
-    const secret = process.env.EXPORT_SIGNING_SECRET ?? "dev-export-secret";
-    return createHmac("sha256", secret).update(`${exportId}:${JSON.stringify(payload)}`).digest("hex");
-  }
 
   async createExport(userId: string, format: "json" | "pdf") {
     if (format === "pdf") {
@@ -56,7 +52,7 @@ export class ExportsService {
 
     const baseUrl = process.env.PUBLIC_API_URL ?? "http://localhost:3001";
     const verificationUrl = `${baseUrl}/v1/verify/${record.id}`;
-    const signature = this.sign(record.id, snapshot);
+    const signature = this.signer.sign(record.id, snapshot);
     const payload = { ...snapshot, verificationUrl, signature };
 
     const updated = await this.prisma.export.update({
