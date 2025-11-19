@@ -9,7 +9,9 @@ import { ResumeTimeline } from "../../components/dashboard/resume-timeline";
 import { ScoreCards } from "../../components/dashboard/score-cards";
 import { ScoreDrawer } from "../../components/dashboard/score-drawer";
 import { ScoreHero } from "../../components/dashboard/score-hero";
+import { ExportModal } from "../../components/dashboard/export-modal";
 import { ShareModal } from "../../components/dashboard/share-modal";
+import { getSubscriptionStatus } from "../../lib/api/billing";
 import { ProfileFooter } from "../../components/profile/profile-footer";
 import { TrustSignalsPanel } from "../../components/profile/trust-signals";
 import { api } from "../../lib/api/client";
@@ -19,12 +21,17 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<ProfileOwnerDto | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     if (!getAccessToken()) {
       return;
     }
     api.getMyProfile().then((p) => setProfile(p as ProfileOwnerDto));
+    void getSubscriptionStatus()
+      .then((s) => setIsPremium(s.plan === "premium"))
+      .catch(() => setIsPremium(false));
   }, []);
 
   if (!profile) {
@@ -41,15 +48,16 @@ export default function DashboardPage() {
           <ScoreHero reputationIndex={profile.reputationIndex} status={profile.status} />
           <ScoreCards dimensions={profile.dimensions} onSelectDimension={() => setDrawerOpen(true)} />
         </div>
-        {canShare ? (
-          <button
-            type="button"
-            onClick={() => setShareOpen(true)}
-            className="ui-btn ui-btn-primary w-full shrink-0 lg:sticky lg:top-6 lg:w-auto"
-          >
-            Share profile
+        <div className="flex w-full shrink-0 flex-col gap-2 lg:sticky lg:top-6 lg:w-auto">
+          <button type="button" onClick={() => setExportOpen(true)} className="ui-btn ui-btn-secondary w-full">
+            Export
           </button>
-        ) : null}
+          {canShare ? (
+            <button type="button" onClick={() => setShareOpen(true)} className="ui-btn ui-btn-primary w-full">
+              Share profile
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <section className="ui-card">
@@ -87,6 +95,7 @@ export default function DashboardPage() {
 
       <ScoreDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <ShareModal open={shareOpen} slug={profile.slug} onClose={() => setShareOpen(false)} />
+      <ExportModal open={exportOpen} onClose={() => setExportOpen(false)} isPremium={isPremium} />
     </div>
   );
 }
