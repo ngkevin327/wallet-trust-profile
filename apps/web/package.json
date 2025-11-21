@@ -21,7 +21,8 @@
     "siwe": "^2.3.2",
     "viem": "^2.21.54",
     "wagmi": "^2.14.6",
-    "qrcode": "^1.5.4"
+    "qrcode": "^1.5.4",
+    "recharts": "^2.15.0"
   },
   "devDependencies": {
     "@onchain-reputation/config": "workspace:*",
