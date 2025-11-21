@@ -18,4 +18,18 @@ export class ScoresRepository {
       orderBy: { earnedAt: "desc" },
     });
   }
+
+  findSnapshotsForWallet(walletId: string, since: Date, limit = 100) {
+    return this.prisma.scoreSnapshot.findMany({
+      where: { walletId, createdAt: { gte: since } },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: {
+        id: true,
+        createdAt: true,
+        reputationIndex: true,
+        scoringVersion: true,
+      },
+    });
+  }
 }

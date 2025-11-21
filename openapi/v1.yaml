@@ -103,6 +103,42 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /me/scores/history:
+    get:
+      tags: [scores]
+      summary: Get score snapshot history (premium)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Snapshot history (last 90 days)
+        "402":
+          description: Premium required
+
+  /me/exports:
+    post:
+      tags: [exports]
+      summary: Create reputation export (JSON or PDF)
+      security:
+        - bearerAuth: []
+      responses:
+        "201":
+          description: Export created
+
+  /verify/{exportId}:
+    get:
+      tags: [exports]
+      summary: Verify export signature (public)
+      parameters:
+        - name: exportId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Verification result
+
   /profiles/{slug}:
     get:
       tags: [profiles]
