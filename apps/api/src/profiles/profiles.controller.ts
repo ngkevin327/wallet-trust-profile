@@ -16,6 +16,7 @@ import { RateLimitGuard } from "../common/guards/rate-limit.guard";
 import { UsersRepository } from "../users/users.repository";
 import { WalletsRepository } from "../wallets/wallets.repository";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { EntitlementsService } from "../billing/entitlements.service";
 import { ProfilesService } from "./profiles.service";
 
 @ApiTags("profiles")
@@ -27,6 +28,7 @@ export class MeProfileController {
     private readonly profilesService: ProfilesService,
     private readonly usersRepo: UsersRepository,
     private readonly walletsRepo: WalletsRepository,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   @Get()
@@ -57,7 +59,8 @@ export class MeProfileController {
       throw new NotFoundException("No wallet linked");
     }
     const chainId = primary.chainScope[0]?.includes("8453") ? 8453 : 1;
-    const isPremium = dbUser?.subscriptionTier === "premium";
-    return this.profilesService.triggerRefresh(user.sub, primary.id, chainId, isPremium);
+    await this.entitlements.assertRefreshAllowed(user.sub);
+    void dbUser;
+    return this.profilesService.triggerRefresh(user.sub, primary.id, chainId, true);
   }
 }

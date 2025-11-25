@@ -6,6 +6,7 @@ import {
   UPGRADE_PATH,
 } from "@onchain-reputation/shared";
 import { SubscriptionPlan, SubscriptionStatus } from "@prisma/client";
+import { PREMIUM_REFRESH_DAILY_LIMIT, IndexerOrchestrator } from "../indexer/indexer.orchestrator";
 import { PrismaService } from "../prisma/prisma.service";
 import { PaymentRequiredException } from "./payment-required.exception";
 
@@ -63,18 +64,9 @@ export class EntitlementsService {
       throw new PaymentRequiredException("refresh");
     }
 
-    const dayKey = new Date().toISOString().slice(0, 10);
-    const key = `refresh:${userId}:${dayKey}`;
-    const count = await this.prisma.$queryRawUnsafe<{ count: bigint }[]>(
-      `SELECT COUNT(*)::bigint AS count FROM index_runs ir
-       JOIN wallets w ON w.id = ir.wallet_id
-       WHERE w.user_id = $1::uuid AND ir.started_at >= $2::timestamptz`,
-      userId,
-      `${dayKey}T00:00:00.000Z`,
-    ).catch(() => [{ count: 0n }]);
+    const used = await this.indexer.countRunsTodayForUser(userId);
 
-    const used = Number(count[0]?.count ?? 0);
-    if (used >= this.refreshLimitPerDay) {
+    if (used >= PREMIUM_REFRESH_DAILY_LIMIT) {
       throw new HttpException(
         {
           statusCode: HttpStatus.TOO_MANY_REQUESTS,

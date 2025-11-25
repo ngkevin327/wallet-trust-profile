@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { IndexerApiModule } from "../indexer/indexer-api.module";
 import { UsersModule } from "../users/users.module";
 import { BillingController } from "./billing.controller";
 import { StripeWebhookController } from "./stripe.webhook.controller";
@@ -8,7 +9,7 @@ import { EntitlementsService } from "./entitlements.service";
 import { StripeService } from "./stripe.service";
 
 @Module({
-  imports: [UsersModule],
+  imports: [IndexerApiModule, UsersModule],
   controllers: [BillingController],
   providers: [EntitlementsService, EntitlementsGuard, StripeService],
   exports: [EntitlementsService, EntitlementsGuard, StripeService],

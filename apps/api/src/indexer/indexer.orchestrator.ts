@@ -3,12 +3,28 @@ import { IndexRunStatus } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 import { IndexerQueue } from "./indexer.queue";
 
+export const PREMIUM_REFRESH_DAILY_LIMIT = Number(
+  process.env.PREMIUM_REFRESH_LIMIT_PER_DAY ?? 5,
+);
+
 @Injectable()
 export class IndexerOrchestrator {
   constructor(
     private readonly prisma: PrismaService,
     private readonly queue: IndexerQueue,
   ) {}
+
+  /** Count index runs started today for rate-limiting premium refresh. */
+  async countRunsTodayForUser(userId: string): Promise<number> {
+    const startOfDay = new Date();
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    return this.prisma.indexRun.count({
+      where: {
+        wallet: { userId },
+        startedAt: { gte: startOfDay },
+      },
+    });
+  }
 
   async createRun(walletId: string, userId: string, chainId: number) {
     const run = await this.prisma.indexRun.create({

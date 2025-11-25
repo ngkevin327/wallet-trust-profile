@@ -7,7 +7,7 @@ import type { ProfileOwnerDto } from "@onchain-reputation/shared";
 @Injectable()
 export class PdfGenerator {
   private readonly template = Handlebars.compile(
-    readFileSync(join(__dirname, "../../templates/export-profile.hbs"), "utf8"),
+    readFileSync(join(process.cwd(), "templates/export-profile.hbs"), "utf8"),
   );
 
   async generate(params: {
