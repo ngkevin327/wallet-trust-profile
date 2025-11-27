@@ -78,13 +78,21 @@ export default function DashboardPage() {
         activitySummarized={profile.activitySummary?.activitySummarized}
       />
 
-      <button
-        type="button"
-        onClick={() => setDrawerOpen(true)}
-        className="text-sm font-medium text-brand-700 hover:underline"
-      >
-        View full score breakdown
-      </button>
+      <div className="flex flex-wrap items-center gap-4">
+        <button
+          type="button"
+          onClick={() => setDrawerOpen(true)}
+          className="text-sm font-medium text-brand-700 hover:underline"
+        >
+          View full score breakdown
+        </button>
+        <a href="/dashboard/analytics" className="text-sm font-medium text-brand-700 hover:underline">
+          Premium analytics
+          {!isPremium ? (
+            <span className="ml-1 rounded bg-brand-100 px-1.5 py-0.5 text-xs text-brand-800">Premium</span>
+          ) : null}
+        </a>
+      </div>
 
       <ProfileFooter
         scoringVersion={profile.scoringVersion}
