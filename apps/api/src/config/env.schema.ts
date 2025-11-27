@@ -11,6 +11,9 @@ export type ApiEnv = {
   stripePremiumPriceId?: string;
   stripeSuccessUrl?: string;
   stripeCancelUrl?: string;
+  adminApiKey?: string;
+  adminIpAllowlist: string[];
+  adminWritesDisabled: boolean;
 };
 
 function requireEnv(name: string): string {
