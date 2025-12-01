@@ -29,12 +29,14 @@ export class RegistryController {
       protocolCount: protocols.length,
       daoCount: daos.length,
       protocols: protocols.map((p) => ({
+        id: p.id,
         slug: p.slug,
         chainId: p.chainId,
         contract: p.contract,
         category: p.category,
       })),
       daos: daos.map((d) => ({
+        id: d.id,
         slug: d.slug,
         chainId: d.chainId,
         treasury: d.treasury,
