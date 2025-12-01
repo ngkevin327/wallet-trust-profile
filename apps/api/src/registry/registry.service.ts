@@ -1,4 +1,5 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { RiskLabelSeverity } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service";
 
 type CacheEntry<T> = { data: T; expiresAt: number };
@@ -61,5 +62,138 @@ export class RegistryService {
   invalidateCache() {
     this.protocolCache = null;
     this.daoCache = null;
+  }
+
+  async createProtocol(data: {
+    slug: string;
+    name: string;
+    chainId: number;
+    contract?: string;
+    category: string;
+  }) {
+    const row = await this.prisma.protocol.create({
+      data: {
+        slug: data.slug,
+        name: data.name,
+        chainId: data.chainId,
+        contract: data.contract,
+        category: data.category,
+        active: true,
+      },
+    });
+    this.invalidateCache();
+    return row;
+  }
+
+  async updateProtocol(
+    id: string,
+    data: { name?: string; category?: string; active?: boolean },
+  ) {
+    await this.assertProtocol(id);
+    const row = await this.prisma.protocol.update({ where: { id }, data });
+    this.invalidateCache();
+    return row;
+  }
+
+  async deactivateProtocol(id: string) {
+    return this.updateProtocol(id, { active: false });
+  }
+
+  async createDao(data: {
+    slug: string;
+    name: string;
+    chainId: number;
+    treasury?: string;
+    tokenAddress?: string;
+  }) {
+    const row = await this.prisma.dao.create({
+      data: {
+        slug: data.slug,
+        name: data.name,
+        chainId: data.chainId,
+        treasury: data.treasury,
+        tokenAddress: data.tokenAddress,
+        active: true,
+      },
+    });
+    this.invalidateCache();
+    return row;
+  }
+
+  async updateDao(
+    id: string,
+    data: { name?: string; treasury?: string; active?: boolean },
+  ) {
+    await this.assertDao(id);
+    const row = await this.prisma.dao.update({ where: { id }, data });
+    this.invalidateCache();
+    return row;
+  }
+
+  async deactivateDao(id: string) {
+    return this.updateDao(id, { active: false });
+  }
+
+  async createRiskLabel(data: {
+    code: string;
+    title: string;
+    description: string;
+    severity: "low" | "medium" | "high";
+  }) {
+    const row = await this.prisma.riskLabel.create({
+      data: {
+        code: data.code,
+        title: data.title,
+        description: data.description,
+        severity: data.severity as RiskLabelSeverity,
+        active: true,
+      },
+    });
+    return row;
+  }
+
+  async updateRiskLabel(
+    id: string,
+    data: {
+      title?: string;
+      description?: string;
+      severity?: "low" | "medium" | "high";
+      active?: boolean;
+    },
+  ) {
+    await this.assertRiskLabel(id);
+    const row = await this.prisma.riskLabel.update({
+      where: { id },
+      data: {
+        ...data,
+        severity: data.severity as RiskLabelSeverity | undefined,
+      },
+    });
+    return row;
+  }
+
+  async deactivateRiskLabel(id: string) {
+    return this.updateRiskLabel(id, { active: false });
+  }
+
+  private async assertProtocol(id: string) {
+    const row = await this.prisma.protocol.findUnique({ where: { id } });
+    if (!row) {
+      throw new NotFoundException("Protocol not found");
+    }
+  }
+
+  private async assertDao(id: string) {
+    const row = await this.prisma.dao.findUnique({ where: { id } });
+    if (!row) {
+      throw new NotFoundException("DAO not found");
+    }
+  }
+
+  private async assertRiskLabel(id: string) {
+    const row = await this.prisma.riskLabel.findUnique({ where: { id } });
+    if (!row) {
+      throw new NotFoundException("Risk label not found");
+    }
   }
 }

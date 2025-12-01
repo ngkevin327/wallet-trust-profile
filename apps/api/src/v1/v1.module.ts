@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { AdminModule } from "../admin/admin.module";
 import { BillingModule } from "../billing/billing.module";
 import { ExportsModule } from "../exports/exports.module";
 import { AuthModule } from "../auth/auth.module";
@@ -10,6 +11,7 @@ import { WalletsModule } from "../wallets/wallets.module";
 
 @Module({
   imports: [
+    AdminModule,
     BillingModule,
     ExportsModule,
     AuthModule,
