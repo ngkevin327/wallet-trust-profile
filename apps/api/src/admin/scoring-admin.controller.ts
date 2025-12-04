@@ -80,13 +80,10 @@ export class ScoringAdminController {
     auditAdminMutation(req.adminActorId!, "upload", "scoring_config", { version });
 
     if (process.env.REDIS_URL) {
-      try {
-        const Redis = require("ioredis");
-        const redis = new Redis(process.env.REDIS_URL);
-        void redis.publish("scoring:config:reload", version).finally(() => redis.quit());
-      } catch {
-        // optional worker reload hook
-      }
+      void import("ioredis").then(({ default: Redis }) => {
+        const redis = new Redis(process.env.REDIS_URL!);
+        return redis.publish("scoring:config:reload", version).finally(() => redis.quit());
+      });
     }
 
     return { version, path: `config/scoring/${version}.yaml`, reloadSignal: "scoring:config:reload" };

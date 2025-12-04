@@ -44,5 +44,11 @@ export function loadApiEnv(): ApiEnv {
     stripePremiumPriceId: process.env.STRIPE_PREMIUM_PRICE_ID,
     stripeSuccessUrl: process.env.STRIPE_SUCCESS_URL ?? "http://localhost:3000/pricing?success=1",
     stripeCancelUrl: process.env.STRIPE_CANCEL_URL ?? "http://localhost:3000/pricing?canceled=1",
+    adminApiKey: process.env.ADMIN_API_KEY,
+    adminIpAllowlist: (process.env.ADMIN_IP_ALLOWLIST ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+    adminWritesDisabled: process.env.ADMIN_WRITES_DISABLED === "true",
   };
 }

@@ -4,10 +4,13 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { loadApiEnv } from "./config/env.schema";
 import { HttpExceptionFilter } from "./common/filters/http-exception.filter";
+import { initApiTelemetry } from "./telemetry/otel";
 
 async function bootstrap() {
+  await initApiTelemetry();
   const env = loadApiEnv();
   const app = await NestFactory.create(AppModule, { rawBody: true });
+  // Security headers applied via SecurityHeadersMiddleware (CommonModule)
 
   app.setGlobalPrefix("v1", { exclude: ["health", "ready"] });
 
