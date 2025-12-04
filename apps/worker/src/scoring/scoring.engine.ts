@@ -1,4 +1,4 @@
-import { loadScoringConfig } from "./config.loader";
+import { loadScoringConfig, reloadScoringConfig } from "./config.loader";
 import { scoreContribution } from "./dimensions/contribution";
 import { scoreGovernance } from "./dimensions/governance";
 import { scorePaymentReliability } from "./dimensions/payment";
@@ -6,22 +6,16 @@ import { scoreProtocolParticipation } from "./dimensions/protocol";
 import type { ScoringInputs, ScoringResult } from "./scoring.types";
 
 export class ScoringEngine {
-  private readonly config = loadScoringConfig();
+  reloadConfig(): void {
+    reloadScoringConfig();
+  }
 
   score(inputs: ScoringInputs): ScoringResult {
-    const governance = scoreGovernance(inputs, this.config.dimensions.governance);
-    const contribution = scoreContribution(
-      inputs,
-      this.config.dimensions.contribution,
-    );
-    const payment = scorePaymentReliability(
-      inputs,
-      this.config.dimensions.payment_reliability,
-    );
-    const protocol = scoreProtocolParticipation(
-      inputs,
-      this.config.dimensions.protocol_participation,
-    );
+    const config = loadScoringConfig();
+    const governance = scoreGovernance(inputs, config.dimensions.governance);
+    const contribution = scoreContribution(inputs, config.dimensions.contribution);
+    const payment = scorePaymentReliability(inputs, config.dimensions.payment_reliability);
+    const protocol = scoreProtocolParticipation(inputs, config.dimensions.protocol_participation);
 
     const dimensionDetails = [governance, contribution, payment, protocol];
     const dimensions: Record<string, number> = {
@@ -31,7 +25,7 @@ export class ScoringEngine {
       protocol_participation: protocol.score,
     };
 
-    const weights = this.config.dimensions;
+    const weights = config.dimensions;
     const weighted =
       governance.score * weights.governance.weight +
       contribution.score * weights.contribution.weight +
@@ -40,13 +34,13 @@ export class ScoringEngine {
 
     const reputationIndex = Math.round(
       Math.max(
-        this.config.composite.clamp_min,
-        Math.min(this.config.composite.clamp_max, weighted),
+        config.composite.clamp_min,
+        Math.min(config.composite.clamp_max, weighted),
       ),
     );
 
     return {
-      scoringVersion: this.config.version,
+      scoringVersion: config.version,
       reputationIndex,
       dimensions,
       dimensionDetails,

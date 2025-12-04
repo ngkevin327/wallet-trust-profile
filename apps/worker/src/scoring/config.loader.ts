@@ -10,11 +10,37 @@ const REQUIRED_DIMENSIONS = [
   "protocol_participation",
 ] as const;
 
-export function loadScoringConfig(version = "v1"): ScoringConfig {
-  const path = join(process.cwd(), "config", "scoring", `${version}.yaml`);
+let activeVersion = process.env.SCORING_CONFIG_VERSION ?? "v1";
+let cachedConfig: ScoringConfig | null = null;
+
+export function getActiveScoringVersion(): string {
+  return activeVersion;
+}
+
+export function setActiveScoringVersion(version: string): void {
+  activeVersion = version;
+  cachedConfig = null;
+}
+
+/** Clear in-memory cache so the next score run loads fresh YAML from disk. */
+export function reloadScoringConfig(): ScoringConfig {
+  cachedConfig = null;
+  return loadScoringConfig();
+}
+
+export function loadScoringConfig(version?: string): ScoringConfig {
+  const fileVersion = version ?? activeVersion;
+  if (cachedConfig && !version) {
+    return cachedConfig;
+  }
+
+  const path = join(process.cwd(), "config", "scoring", `${fileVersion}.yaml`);
   const config = yaml.load(readFileSync(path, "utf8")) as ScoringConfig;
 
   validateScoringConfig(config);
+  if (!version) {
+    cachedConfig = config;
+  }
   return config;
 }
 
