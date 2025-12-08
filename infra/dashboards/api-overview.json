@@ -1,0 +1,37 @@
+{
+  "title": "Onchain Reputation — API Overview",
+  "description": "SLO: 99.9% availability, P95 profile read <2s. Runbook: documentation/runbooks/on-call.md",
+  "panels": [
+    {
+      "id": 1,
+      "title": "HTTP request rate",
+      "type": "timeseries",
+      "targets": [{ "expr": "rate(http_server_duration_count[5m])", "legend": "req/s" }]
+    },
+    {
+      "id": 2,
+      "title": "HTTP P95 latency",
+      "type": "timeseries",
+      "targets": [{ "expr": "histogram_quantile(0.95, http_server_duration_bucket)", "legend": "p95" }],
+      "thresholds": [{ "value": 2, "label": "SLO 2s" }]
+    },
+    {
+      "id": 3,
+      "title": "5xx error rate",
+      "type": "timeseries",
+      "targets": [{ "expr": "rate(http_server_duration_count{status_class='5xx'}[5m])", "legend": "5xx/s" }]
+    },
+    {
+      "id": 4,
+      "title": "Cache hit ratio",
+      "type": "gauge",
+      "targets": [{ "expr": "cache_hits / (cache_hits + cache_misses)", "legend": "hit %" }]
+    },
+    {
+      "id": 5,
+      "title": "DB query P95",
+      "type": "timeseries",
+      "targets": [{ "expr": "histogram_quantile(0.95, db_client_operation_duration_bucket)" }]
+    }
+  ]
+}

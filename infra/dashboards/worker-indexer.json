@@ -1,0 +1,36 @@
+{
+  "title": "Onchain Reputation — Worker Indexer",
+  "description": "Monitor indexer backlog, job failures, DLQ depth. Runbook: documentation/runbooks/indexer-failure.md",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Indexer job duration P95",
+      "type": "timeseries",
+      "targets": [{ "expr": "histogram_quantile(0.95, indexer_job_duration_bucket)", "legend": "p95 ms" }]
+    },
+    {
+      "id": 2,
+      "title": "Indexer backlog (pending runs)",
+      "type": "gauge",
+      "targets": [{ "expr": "index_runs_pending_total", "legend": "pending" }]
+    },
+    {
+      "id": 3,
+      "title": "Job failures",
+      "type": "timeseries",
+      "targets": [{ "expr": "rate(indexer_job_failed_total[5m])", "legend": "failures/s" }]
+    },
+    {
+      "id": 4,
+      "title": "DLQ depth",
+      "type": "gauge",
+      "targets": [{ "expr": "redis_stream_length{stream='indexer:dlq'}", "legend": "messages" }]
+    },
+    {
+      "id": 5,
+      "title": "Concurrent index jobs",
+      "type": "gauge",
+      "targets": [{ "expr": "worker_concurrent_jobs", "legend": "active" }]
+    }
+  ]
+}
