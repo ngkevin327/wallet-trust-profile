@@ -5,6 +5,7 @@ export type WorkerEnv = {
   rpcUrlEthereum?: string;
   rpcUrlBase?: string;
   alchemyApiKey?: string;
+  maxConcurrentIndexJobs: number;
 };
 
 function requireEnv(name: string): string {
@@ -23,5 +24,6 @@ export function loadWorkerEnv(): WorkerEnv {
     rpcUrlEthereum: process.env.RPC_URL_ETHEREUM,
     rpcUrlBase: process.env.RPC_URL_BASE,
     alchemyApiKey: process.env.ALCHEMY_API_KEY,
+    maxConcurrentIndexJobs: Number(process.env.MAX_CONCURRENT_INDEX_JOBS ?? 5),
   };
 }

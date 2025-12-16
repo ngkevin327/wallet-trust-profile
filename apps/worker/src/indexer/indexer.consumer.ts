@@ -20,10 +20,12 @@ import { SnapshotWriter } from "../scoring/snapshot.writer";
 import { BadgeEvaluator } from "../badges/badge.evaluator";
 import { RiskEngine } from "../risk/risk.engine";
 import { ProfileProjector } from "../profile/profile.projector";
+import { withSpan } from "../telemetry/otel";
 
 const STREAM_KEY = "indexer:jobs";
 const GROUP = "indexer-workers";
 const CONSUMER = `worker-${process.pid}`;
+const MAX_CONCURRENT_INDEX_JOBS = Number(process.env.MAX_CONCURRENT_INDEX_JOBS ?? 5);
 
 function createRpcClient(rpcUrl: string): RpcClient {
   return {
@@ -60,6 +62,7 @@ export class IndexerConsumer {
   private ethAdapter: EthereumIndexerAdapter;
   private baseAdapter: BaseL2Adapter;
   private running = false;
+  private activeJobs = 0;
 
   constructor(
     redisUrl: string,
@@ -102,6 +105,11 @@ export class IndexerConsumer {
     console.log("[worker] indexer consumer started");
 
     while (this.running) {
+      if (this.activeJobs >= MAX_CONCURRENT_INDEX_JOBS) {
+        await new Promise((r) => setTimeout(r, 500));
+        continue;
+      }
+
       const results = await this.redis.xreadgroup(
         "GROUP",
         GROUP,
@@ -121,8 +129,18 @@ export class IndexerConsumer {
 
       for (const [, messages] of results) {
         for (const [id, fields] of messages) {
+          this.activeJobs += 1;
+          console.log(
+            JSON.stringify({
+              event: "worker.concurrent_jobs",
+              active: this.activeJobs,
+              limit: MAX_CONCURRENT_INDEX_JOBS,
+            }),
+          );
           try {
-            await this.processJob(fields);
+            await withSpan("index.run", { consumer: CONSUMER }, async () => {
+              await this.processJob(fields);
+            });
             await this.redis.xack(STREAM_KEY, GROUP, id);
           } catch (error) {
             const attempt = Number(this.parseFields(fields).attempt ?? 1);
@@ -142,6 +160,8 @@ export class IndexerConsumer {
               );
             }
             await this.redis.xack(STREAM_KEY, GROUP, id);
+          } finally {
+            this.activeJobs = Math.max(0, this.activeJobs - 1);
           }
         }
       }
@@ -210,8 +230,11 @@ export class IndexerConsumer {
       await this.reorg.reconcile(walletId, chainId, fromBlock);
 
       const txs = await adapter.fetchTransactions(wallet.address, fromBlock, toBlock);
-      let facts = await Promise.all(
-        txs.map((tx) => this.classifier.classify(tx, wallet.address)),
+      let facts = await withSpan(
+        "classify",
+        { wallet_id: walletId, chain_id: chainId, tx_count: txs.length },
+        async () =>
+          Promise.all(txs.map((tx) => this.classifier.classify(tx, wallet.address))),
       );
 
       if (this.snapshot.isEnabled()) {
@@ -233,7 +256,7 @@ export class IndexerConsumer {
       await this.indexerService.updateLastIndexedBlock(walletId, chainId, toBlock);
 
       const scoringInputs = buildScoringInputs(wallet.address, toStore, wallet.linkedAt);
-      const scoringResult = this.scoringEngine.score(scoringInputs);
+      const scoringResult = await this.scoringEngine.score(scoringInputs);
       await this.snapshotWriter.persist(walletId, indexRun.id, scoringResult);
       await this.badgeEvaluator.syncAwards(walletId, scoringResult);
       const trustFlags = await this.riskEngine.evaluate(wallet.address, toStore);
@@ -245,16 +268,18 @@ export class IndexerConsumer {
         }),
       );
 
-      await this.profileProjector.project({
-        userId,
-        walletId,
-        walletAddress: wallet.address,
-        scoringResult,
-        scoringVersion: scoringResult.scoringVersion,
-        trustFlags,
-        facts: toStore,
-        lastUpdatedAt: new Date(),
-      });
+      await withSpan("project", { wallet_id: walletId, user_id: userId }, async () =>
+        this.profileProjector.project({
+          userId,
+          walletId,
+          walletAddress: wallet.address,
+          scoringResult,
+          scoringVersion: scoringResult.scoringVersion,
+          trustFlags,
+          facts: toStore,
+          lastUpdatedAt: new Date(),
+        }),
+      );
 
       await this.prisma.indexRun.update({
         where: { id: indexRun.id },
