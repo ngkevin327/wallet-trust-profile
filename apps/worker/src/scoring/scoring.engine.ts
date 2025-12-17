@@ -1,3 +1,4 @@
+import { withSpan } from "../telemetry/otel";
 import { loadScoringConfig, reloadScoringConfig } from "./config.loader";
 import { scoreContribution } from "./dimensions/contribution";
 import { scoreGovernance } from "./dimensions/governance";
@@ -10,7 +11,13 @@ export class ScoringEngine {
     reloadScoringConfig();
   }
 
-  score(inputs: ScoringInputs): ScoringResult {
+  async score(inputs: ScoringInputs): Promise<ScoringResult> {
+    return withSpan("score.compute", { wallet: inputs.walletAddress.slice(0, 10) }, async () =>
+      this.computeScore(inputs),
+    );
+  }
+
+  private computeScore(inputs: ScoringInputs): ScoringResult {
     const config = loadScoringConfig();
     const governance = scoreGovernance(inputs, config.dimensions.governance);
     const contribution = scoreContribution(inputs, config.dimensions.contribution);

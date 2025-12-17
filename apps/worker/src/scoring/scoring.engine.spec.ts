@@ -20,19 +20,19 @@ const richInputs: ScoringInputs = {
 };
 
 describe("ScoringEngine", () => {
-  it("computes composite index within bounds", () => {
+  it("computes composite index within bounds", async () => {
     const engine = new ScoringEngine();
-    const result = engine.score(richInputs);
+    const result = await engine.score(richInputs);
     expect(result.reputationIndex).toBeGreaterThanOrEqual(0);
     expect(result.reputationIndex).toBeLessThanOrEqual(100);
     expect(result.scoringVersion).toBe("1.0.0");
     expect(Object.keys(result.dimensions)).toHaveLength(4);
   });
 
-  it("scores higher for richer on-chain activity", () => {
+  it("scores higher for richer on-chain activity", async () => {
     const engine = new ScoringEngine();
-    const rich = engine.score(richInputs);
-    const sparse = engine.score({
+    const rich = await engine.score(richInputs);
+    const sparse = await engine.score({
       ...richInputs,
       governanceVotes: 0,
       daoPayments: 0,

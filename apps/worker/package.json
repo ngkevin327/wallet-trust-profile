@@ -13,7 +13,10 @@
   "dependencies": {
     "@prisma/client": "^6.1.0",
     "ioredis": "^5.4.2",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-node": "^0.57.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.57.0"
   },
   "prisma": {
     "schema": "../api/prisma/schema.prisma"
