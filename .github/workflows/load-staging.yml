@@ -1,0 +1,40 @@
+name: Load Test Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: Staging API base URL (no trailing slash)
+        required: true
+        default: https://api.staging.onchain-reputation.example
+      public_slug:
+        description: Public profile slug to load test
+        required: true
+        default: demo-builder
+
+jobs:
+  k6-public-profile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Run public profile load test
+        env:
+          API_BASE_URL: ${{ inputs.api_base_url }}
+          PUBLIC_PROFILE_SLUG: ${{ inputs.public_slug }}
+        run: k6 run tests/load/public-profile.k6.js
+
+      - name: Upload k6 summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-summary
+          path: summary.json
+          if-no-files-found: warn
