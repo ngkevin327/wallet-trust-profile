@@ -1,0 +1,63 @@
+name: Nightly Testnet
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  testnet-indexing:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: reputation
+          POSTGRES_PASSWORD: reputation
+          POSTGRES_DB: reputation
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate Prisma client
+        working-directory: apps/api
+        run: pnpm exec prisma generate
+
+      - name: Migrate database
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://reputation:reputation@localhost:5432/reputation
+        run: pnpm exec prisma migrate deploy
+
+      - name: Seed database
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://reputation:reputation@localhost:5432/reputation
+        run: pnpm exec prisma db seed
+
+      - name: Run testnet indexing spec
+        working-directory: apps/worker
+        env:
+          DATABASE_URL: postgresql://reputation:reputation@localhost:5432/reputation
+          REDIS_URL: redis://localhost:6379
+          TESTNET_E2E: ${{ secrets.ALCHEMY_API_KEY != '' && 'true' || 'false' }}
+          RPC_URL_ETHEREUM: ${{ secrets.RPC_URL_ETHEREUM }}
+          ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+        run: pnpm test -- --testPathPattern=e2e-indexing.testnet
