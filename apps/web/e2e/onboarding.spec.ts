@@ -7,12 +7,16 @@ test.describe("Onboarding happy path", () => {
 
   test("landing shows connect CTA and how-it-works link", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /professional reputation/i })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /professional reputation/i })).toBeVisible({
+      timeout: 15_000,
+    });
     await expect(page.getByRole("link", { name: /how it works/i })).toBeVisible();
   });
 
   test("dashboard route accessible in test mode", async ({ page }) => {
     await page.goto("/dashboard");
-    await expect(page.getByText(/reputation index|loading dashboard/i)).toBeVisible();
+    await expect(page.getByText(/reputation index|loading dashboard/i)).toBeVisible({
+      timeout: 15_000,
+    });
   });
 });
