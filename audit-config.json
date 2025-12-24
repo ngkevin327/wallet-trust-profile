@@ -1,0 +1,10 @@
+{
+  "auditLevel": "high",
+  "allowlist": {
+    "GHSA-xxxx-yyyy-zzzz": {
+      "reason": "Example: document each exception with expiry",
+      "expires": "2026-12-31"
+    }
+  },
+  "ignoreDevDependencies": false
+}
