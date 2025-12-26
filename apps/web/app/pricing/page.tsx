@@ -91,6 +91,18 @@ export default function PricingPage() {
           </button>
         </section>
       </div>
+
+      <p className="mt-10 text-center text-xs text-slate-500">
+        By upgrading you agree to our{" "}
+        <Link href="/legal/terms" className="text-brand-700 hover:underline">
+          Terms
+        </Link>{" "}
+        and{" "}
+        <Link href="/legal/privacy" className="text-brand-700 hover:underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </main>
   );
 }

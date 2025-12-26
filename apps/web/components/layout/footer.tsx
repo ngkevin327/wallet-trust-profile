@@ -15,6 +15,12 @@ export function SiteFooter() {
           <Link href="/documentation/scoring-methodology" className="hover:text-brand-700">
             Scoring
           </Link>
+          <Link href="/legal/privacy" className="hover:text-brand-700">
+            Privacy
+          </Link>
+          <Link href="/legal/terms" className="hover:text-brand-700">
+            Terms
+          </Link>
         </nav>
       </div>
     </footer>
