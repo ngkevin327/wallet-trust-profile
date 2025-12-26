@@ -1,0 +1,14 @@
+aws_region            = "us-east-1"
+project_name          = "onchain-reputation"
+vpc_cidr              = "10.30.0.0/16"
+db_instance_class     = "db.t4g.small"
+redis_node_type       = "cache.t4g.small"
+api_certificate_arn   = "arn:aws:acm:us-east-1:123456789012:certificate/api-cert-id"
+web_certificate_arn   = "arn:aws:acm:us-east-1:123456789012:certificate/web-cert-id"
+domain_name           = "onchain-reputation.example"
+
+# Apply (manual approval required — no auto-apply):
+#   cd infra/terraform/envs/prod
+#   terraform init
+#   terraform plan -var-file=terraform.tfvars
+# Ops sign-off required before: terraform apply -var-file=terraform.tfvars
