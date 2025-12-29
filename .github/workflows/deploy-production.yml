@@ -1,0 +1,82 @@
+name: Deploy Production
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  ECS_CLUSTER: onchain-reputation-prod-cluster
+  API_SERVICE: onchain-reputation-prod-api
+  WORKER_SERVICE: onchain-reputation-prod-worker
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_PROD_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy API service
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $API_SERVICE \
+            --force-new-deployment
+
+      - name: Deploy worker service
+        run: |
+          aws ecs update-service \
+            --cluster $ECS_CLUSTER \
+            --service $WORKER_SERVICE \
+            --force-new-deployment
+
+      - name: Wait for API stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster $ECS_CLUSTER \
+            --services $API_SERVICE
+
+      - name: Smoke test health
+        env:
+          PROD_API_URL: ${{ secrets.PROD_API_URL }}
+        run: |
+          curl -sf "${PROD_API_URL}/health"
+          curl -sf "${PROD_API_URL}/v1/profiles/demo-builder" | head -c 200
+
+      - name: Smoke test public profile slug
+        env:
+          PROD_API_URL: ${{ secrets.PROD_API_URL }}
+        run: |
+          curl -sf "${PROD_API_URL}/v1/profiles/demo-builder" \
+            | grep -q '"slug"'
+
+  rollback-on-failure:
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: failure()
+    environment: production
+    permissions:
+      id-token: write
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_PROD_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Roll back API task definition
+        run: |
+          echo "Smoke tests failed — revert to previous ECS task revision manually or via scripted rollback."
+          echo "See documentation/launch/rollback-plan.md"
