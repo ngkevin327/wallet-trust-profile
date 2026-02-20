@@ -6,6 +6,8 @@
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel run dev",
+    "setup:local": "node scripts/setup-local.mjs",
+    "verify:local": "node scripts/verify-local.mjs",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",

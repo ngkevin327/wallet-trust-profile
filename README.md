@@ -12,12 +12,12 @@ Professional reputation profiles built from verifiable wallet activity — contr
 
 Monorepo with three deployable applications and shared libraries:
 
-| Component | Path | Role |
-|-----------|------|------|
-| Web | `apps/web` | Next.js App Router — marketing, onboarding, profiles |
-| API | `apps/api` | NestJS REST API — auth, profiles, exports |
-| Worker | `apps/worker` | Background indexer and scoring jobs |
-| Shared | `packages/shared` | Types, constants, API route definitions |
+| Component | Path              | Role                                                 |
+| --------- | ----------------- | ---------------------------------------------------- |
+| Web       | `apps/web`        | Next.js App Router — marketing, onboarding, profiles |
+| API       | `apps/api`        | NestJS REST API — auth, profiles, exports            |
+| Worker    | `apps/worker`     | Background indexer and scoring jobs                  |
+| Shared    | `packages/shared` | Types, constants, API route definitions              |
 
 Async indexing uses Redis queues; PostgreSQL is the system of record. Staging and production run on AWS (ECS, RDS, ElastiCache) with infrastructure defined in `infra/terraform`.
 
@@ -42,22 +42,17 @@ Async indexing uses Redis queues; PostgreSQL is the system of record. Staging an
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, commit conventions, and PR expectations.
 
 ```bash
-# Install dependencies
-pnpm install
-
-# Start Postgres and Redis
-docker compose up -d
-
-# Copy environment templates
-cp .env.example .env
-
-# Apply database migrations and seed demo data
-pnpm --filter @onchain-reputation/api db:migrate
-pnpm --filter @onchain-reputation/api db:seed
+# One-command first-time setup (deps, .env, JWT keys, Docker, migrate, seed)
+pnpm setup:local
 
 # Run all apps in development mode
 pnpm dev
+
+# Smoke-check health endpoints and demo profile (API must be running for full pass)
+pnpm verify:local
 ```
+
+See [documentation/runbooks/local-dev.md](./documentation/runbooks/local-dev.md) for the full runbook, env var reference, and verification checklist.
 
 API health: `http://localhost:3001/health`  
 Web: `http://localhost:3000`
