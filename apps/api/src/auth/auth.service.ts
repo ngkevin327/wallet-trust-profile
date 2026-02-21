@@ -63,7 +63,7 @@ export class AuthService {
       await this.profiles.create({
         userId,
         slug,
-        displayName: null,
+        displayName: undefined,
         visibility: ProfileVisibility.public,
       });
 

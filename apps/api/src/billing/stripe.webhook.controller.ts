@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Headers,
-  HttpCode,
-  Logger,
-  Post,
-  RawBodyRequest,
-  Req,
-} from "@nestjs/common";
+import { Controller, Headers, HttpCode, Logger, Post, RawBodyRequest, Req } from "@nestjs/common";
 import { ApiExcludeController, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { loadApiEnv } from "../config/env.schema";
@@ -35,13 +27,13 @@ export class StripeWebhookController {
     if (this.env.stripeWebhookSecret && signature) {
       const Stripe = (await import("stripe")).default;
       const stripe = new Stripe(this.env.stripeSecretKey ?? "sk_test", {
-        apiVersion: "2024-11-20.acacia",
+        apiVersion: "2025-02-24.acacia",
       });
       event = stripe.webhooks.constructEvent(
         rawBody,
         signature,
         this.env.stripeWebhookSecret,
-      ) as typeof event;
+      ) as unknown as typeof event;
     } else {
       event = req.body as typeof event;
       this.logger.warn("Stripe webhook signature verification skipped (dev/mock)");

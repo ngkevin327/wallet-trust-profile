@@ -30,7 +30,7 @@ export class StripeService {
     }
 
     const Stripe = (await import("stripe")).default;
-    const stripe = new Stripe(this.env.stripeSecretKey!, { apiVersion: "2024-11-20.acacia" });
+    const stripe = new Stripe(this.env.stripeSecretKey!, { apiVersion: "2025-02-24.acacia" });
 
     let subscription = await this.prisma.subscription.findUnique({
       where: { userId: params.userId },
@@ -82,7 +82,7 @@ export class StripeService {
     }
 
     const Stripe = (await import("stripe")).default;
-    const stripe = new Stripe(this.env.stripeSecretKey!, { apiVersion: "2024-11-20.acacia" });
+    const stripe = new Stripe(this.env.stripeSecretKey!, { apiVersion: "2025-02-24.acacia" });
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.stripeCustomerId,
       return_url: this.env.stripeSuccessUrl!,

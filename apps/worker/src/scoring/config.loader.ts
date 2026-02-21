@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import yaml from "js-yaml";
+import { resolveRepoRoot } from "../lib/repo-root";
 import type { ScoringConfig } from "./scoring.types";
 
 const REQUIRED_DIMENSIONS = [
@@ -34,7 +35,7 @@ export function loadScoringConfig(version?: string): ScoringConfig {
     return cachedConfig;
   }
 
-  const path = join(process.cwd(), "config", "scoring", `${fileVersion}.yaml`);
+  const path = join(resolveRepoRoot(), "config", "scoring", `${fileVersion}.yaml`);
   const config = yaml.load(readFileSync(path, "utf8")) as ScoringConfig;
 
   validateScoringConfig(config);

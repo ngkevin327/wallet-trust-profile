@@ -16,7 +16,10 @@ export type EffectivePlan = SubscriptionPlanId;
 export class EntitlementsService {
   private readonly refreshLimitPerDay = Number(process.env.PREMIUM_REFRESH_LIMIT_PER_DAY ?? 5);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly indexer: IndexerOrchestrator,
+  ) {}
 
   async getEffectivePlan(userId: string): Promise<EffectivePlan> {
     const subscription = await this.prisma.subscription.findUnique({

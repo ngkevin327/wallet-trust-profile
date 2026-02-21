@@ -1,4 +1,5 @@
-import { Module } from "@nestjs/common";
+import { Module, forwardRef } from "@nestjs/common";
+import { AuthModule } from "../auth/auth.module";
 import { BillingModule } from "../billing/billing.module";
 import { IndexerApiModule } from "../indexer/indexer-api.module";
 import { UsersModule } from "../users/users.module";
@@ -10,7 +11,13 @@ import { ProfilesRepository } from "./profiles.repository";
 import { ProfilesService } from "./profiles.service";
 
 @Module({
-  imports: [BillingModule, IndexerApiModule, UsersModule, WalletsModule],
+  imports: [
+    forwardRef(() => AuthModule),
+    forwardRef(() => BillingModule),
+    IndexerApiModule,
+    UsersModule,
+    forwardRef(() => WalletsModule),
+  ],
   controllers: [MeProfileController, PublicProfilesController],
   providers: [ProfilesRepository, ProjectionsRepository, ProfilesService],
   exports: [ProfilesRepository, ProfilesService],

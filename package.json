@@ -5,9 +5,10 @@
   "description": "Personal onchain reputation and credit profile platform",
   "scripts": {
     "build": "pnpm -r run build",
-    "dev": "pnpm -r --parallel run dev",
+    "dev": "node scripts/dev-local.mjs",
     "setup:local": "node scripts/setup-local.mjs",
     "verify:local": "node scripts/verify-local.mjs",
+    "dev:raw": "pnpm -r --parallel run dev",
     "lint": "pnpm -r run lint",
     "test": "pnpm -r run test",
     "format": "prettier --write \"**/*.{ts,tsx,js,mjs,json,md,yml,yaml}\"",

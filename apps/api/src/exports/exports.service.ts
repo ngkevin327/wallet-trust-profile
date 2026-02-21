@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, TooManyRequestsException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { ExportFormat, ExportStatus } from "@prisma/client";
 import { EntitlementsService } from "../billing/entitlements.service";
 import { PrismaService } from "../prisma/prisma.service";
@@ -29,7 +29,7 @@ export class ExportsService {
       where: { userId, createdAt: { gte: startOfDay } },
     });
     if (todayCount >= DAILY_EXPORT_LIMIT) {
-      throw new TooManyRequestsException("Daily export limit reached");
+      throw new HttpException("Daily export limit reached", HttpStatus.TOO_MANY_REQUESTS);
     }
 
     const profile = await this.profiles.getOwnerProfile(userId);

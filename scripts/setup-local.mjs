@@ -8,31 +8,11 @@ import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { generateKeyPairSync } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
+import { loadRootEnv, repoRoot } from "./lib/load-env.mjs";
 
-const root = join(import.meta.dirname, "..");
+const root = repoRoot;
 const envPath = join(root, ".env");
 const envExamplePath = join(root, ".env.example");
-
-function loadRootEnv() {
-  if (!existsSync(envPath)) return { ...process.env };
-  const merged = { ...process.env };
-  for (const line of readFileSync(envPath, "utf8").split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const eq = trimmed.indexOf("=");
-    if (eq === -1) continue;
-    const key = trimmed.slice(0, eq).trim();
-    let value = trimmed.slice(eq + 1).trim();
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-    merged[key] = value;
-  }
-  return merged;
-}
 
 function run(cmd, opts = {}) {
   console.log(`> ${cmd}`);
