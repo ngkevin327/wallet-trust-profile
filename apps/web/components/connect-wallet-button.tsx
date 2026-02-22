@@ -68,15 +68,11 @@ export function ConnectWalletButton() {
           type="button"
           onClick={handleSignIn}
           disabled={isSigningIn}
-          className="rounded-lg bg-brand-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-500 disabled:opacity-60"
+          className="ui-btn ui-btn-primary disabled:opacity-60"
         >
           {isSigningIn ? "Signing…" : "Sign in"}
         </button>
-        <button
-          type="button"
-          onClick={handleDisconnect}
-          className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-white"
-        >
+        <button type="button" onClick={handleDisconnect} className="ui-btn ui-btn-secondary">
           Disconnect
         </button>
       </div>

@@ -14,9 +14,15 @@ export function DashboardNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-1 border-r border-slate-200 bg-white p-4 md:min-h-screen md:w-56">
-      <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">
-        Onchain Reputation
+    <nav className="flex flex-col gap-1 border-r border-slate-200/80 bg-white p-4 md:min-h-screen md:w-60">
+      <Link
+        href="/"
+        className="mb-6 font-display text-sm font-bold text-slate-900 hover:text-brand-700"
+      >
+        Onchain<span className="text-brand-600">Reputation</span>
+      </Link>
+      <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+        Menu
       </p>
       {links.map((link) => {
         const active = pathname === link.href;
@@ -24,13 +30,17 @@ export function DashboardNav() {
           <Link
             key={link.href + link.label}
             href={link.href}
-            className={`rounded-md px-3 py-2 text-sm font-medium ${
-              active ? "bg-brand-50 text-brand-800" : "text-slate-600 hover:bg-slate-50"
+            className={`rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              active
+                ? "bg-brand-50 text-brand-800 ring-1 ring-brand-100"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             }`}
           >
             {link.label}
             {link.badge ? (
-              <span className="ml-2 text-xs text-slate-400">{link.badge}</span>
+              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
+                {link.badge}
+              </span>
             ) : null}
           </Link>
         );

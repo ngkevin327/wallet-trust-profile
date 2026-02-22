@@ -9,32 +9,61 @@ type Props = {
   footer?: ReactNode;
 };
 
+function initials(displayName: string | null | undefined, slug: string): string {
+  const source = displayName?.trim() || slug;
+  const parts = source.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return `${parts[0]![0]}${parts[1]![0]}`.toUpperCase();
+  }
+  return source.slice(0, 2).toUpperCase();
+}
+
 export function PublicProfileLayout({ profile, children, footer }: Props) {
+  const name = profile.displayName ?? profile.slug;
+  const avatarInitials = initials(profile.displayName, profile.slug);
+
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-medium text-brand-700 hover:underline">
-            Onchain Reputation
+          <Link
+            href="/"
+            className="font-display text-sm font-bold tracking-tight text-slate-900 hover:text-brand-700"
+          >
+            Onchain<span className="text-brand-600">Reputation</span>
           </Link>
-          <Link href="/?utm_source=public_profile&utm_medium=header" className="ui-btn ui-btn-primary text-sm">
+          <Link
+            href="/?utm_source=public_profile&utm_medium=header"
+            className="ui-btn ui-btn-primary text-sm"
+          >
             Connect wallet
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-slate-900">
-            {profile.displayName ?? profile.slug}
-          </h1>
-          <p className="mt-1 text-slate-600">@{profile.slug}</p>
-          <div className="mt-2">
-            <LastUpdated iso={profile.lastUpdatedAt ?? profile.lastUpdated} />
+      <div className="border-b border-slate-200/60 bg-gradient-to-br from-brand-50 via-white to-cyan-50/40">
+        <div className="mx-auto max-w-3xl px-6 py-10">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+            <div
+              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 font-display text-2xl font-bold text-white shadow-lg ring-4 ring-white"
+              aria-hidden
+            >
+              {avatarInitials}
+            </div>
+            <div>
+              <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                {name}
+              </h1>
+              <p className="mt-1 font-medium text-brand-700">@{profile.slug}</p>
+              <div className="mt-2">
+                <LastUpdated iso={profile.lastUpdatedAt ?? profile.lastUpdated} />
+              </div>
+            </div>
           </div>
         </div>
-        {children}
-      </main>
+      </div>
+
+      <main className="mx-auto max-w-3xl px-6 py-10">{children}</main>
 
       {footer}
     </div>

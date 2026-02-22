@@ -1,0 +1,39 @@
+import Link from "next/link";
+
+type Props = {
+  variant?: "light" | "transparent";
+};
+
+export function SiteHeader({ variant = "light" }: Props) {
+  const shell =
+    variant === "transparent"
+      ? "border-transparent bg-transparent"
+      : "border-slate-200/80 bg-white/80 backdrop-blur-md";
+
+  return (
+    <header className={`sticky top-0 z-50 border-b ${shell}`}>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link
+          href="/"
+          className="font-display text-lg font-bold tracking-tight text-slate-900 hover:text-brand-700"
+        >
+          Onchain<span className="text-brand-600">Reputation</span>
+        </Link>
+        <nav className="hidden items-center gap-8 text-sm font-medium text-slate-600 sm:flex">
+          <Link href="/how-it-works" className="transition-colors hover:text-brand-700">
+            How it works
+          </Link>
+          <Link href="/pricing" className="transition-colors hover:text-brand-700">
+            Pricing
+          </Link>
+          <Link href="/faq" className="transition-colors hover:text-brand-700">
+            FAQ
+          </Link>
+        </nav>
+        <Link href="/#connect" className="ui-btn ui-btn-primary text-sm">
+          Get started
+        </Link>
+      </div>
+    </header>
+  );
+}

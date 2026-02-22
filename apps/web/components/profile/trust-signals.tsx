@@ -23,12 +23,9 @@ export function TrustSignalsPanel({ signals, variant = "owner" }: Props) {
 
   const highSeverity = signals.filter((s) => s.severity === "high");
   const visibleSignals =
-    variant === "public" && !expandedHigh
-      ? signals.filter((s) => s.severity !== "high")
-      : signals;
+    variant === "public" && !expandedHigh ? signals.filter((s) => s.severity !== "high") : signals;
 
-  const hiddenHighCount =
-    variant === "public" && !expandedHigh ? highSeverity.length : 0;
+  const hiddenHighCount = variant === "public" && !expandedHigh ? highSeverity.length : 0;
 
   return (
     <section className="mt-8">
@@ -42,7 +39,7 @@ export function TrustSignalsPanel({ signals, variant = "owner" }: Props) {
         {visibleSignals.map((signal) => (
           <li
             key={signal.code}
-            className="rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-800"
+            className="rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-slate-800 shadow-sm"
           >
             <div className="flex items-start gap-2">
               <span className="mt-0.5 text-slate-500" aria-hidden>
