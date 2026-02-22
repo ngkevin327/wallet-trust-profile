@@ -4,12 +4,12 @@ Thank you for contributing to Onchain Reputation. This guide covers local setup,
 
 ## Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Node.js | 20+ (use `nvm use` with `.nvmrc`) |
-| pnpm | 9+ |
-| Docker | Latest stable (for Postgres and Redis) |
-| Git | 2.40+ |
+| Tool    | Version                                |
+| ------- | -------------------------------------- |
+| Node.js | 20+ (use `nvm use` with `.nvmrc`)      |
+| pnpm    | 9+                                     |
+| Docker  | Latest stable (for Postgres and Redis) |
+| Git     | 2.40+                                  |
 
 Optional for infrastructure work:
 
@@ -28,6 +28,8 @@ pnpm dev
 ```
 
 Verify the API responds at `http://localhost:3001/health`.
+
+For the full local runbook (env vars, verification checklist, troubleshooting), see [documentation/runbooks/local-dev.md](documentation/runbooks/local-dev.md).
 
 ## Branch naming
 
