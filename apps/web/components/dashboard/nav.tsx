@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 
 const links = [
   { href: "/dashboard", label: "Overview" },
-  { href: "/settings/profile", label: "Settings" },
+  { href: "/settings/profile", label: "Profile" },
   { href: "/settings/wallets", label: "Wallets" },
-  { href: "/settings/profile", label: "Upgrade", badge: "Soon" },
+  { href: "/settings/billing", label: "Billing" },
+  { href: "/dashboard/analytics", label: "Analytics", badge: "Premium" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export function DashboardNav() {
@@ -17,7 +19,7 @@ export function DashboardNav() {
     <nav className="flex flex-col gap-1 border-r border-slate-200/80 bg-white p-4 md:min-h-screen md:w-60">
       <Link
         href="/"
-        className="mb-6 font-display text-sm font-bold text-slate-900 hover:text-brand-700"
+        className="mb-6 font-display text-sm font-bold text-slate-900 hover:text-brand-600"
       >
         Onchain<span className="text-brand-600">Reputation</span>
       </Link>
@@ -25,7 +27,8 @@ export function DashboardNav() {
         Menu
       </p>
       {links.map((link) => {
-        const active = pathname === link.href;
+        const active =
+          pathname === link.href || (link.href !== "/dashboard" && pathname.startsWith(link.href));
         return (
           <Link
             key={link.href + link.label}
@@ -38,7 +41,7 @@ export function DashboardNav() {
           >
             {link.label}
             {link.badge ? (
-              <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
+              <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-800">
                 {link.badge}
               </span>
             ) : null}
