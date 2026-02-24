@@ -46,14 +46,25 @@ export default function DashboardPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1 space-y-6">
           <ScoreHero reputationIndex={profile.reputationIndex} status={profile.status} />
-          <ScoreCards dimensions={profile.dimensions} onSelectDimension={() => setDrawerOpen(true)} />
+          <ScoreCards
+            dimensions={profile.dimensions}
+            onSelectDimension={() => setDrawerOpen(true)}
+          />
         </div>
         <div className="flex w-full shrink-0 flex-col gap-2 lg:sticky lg:top-6 lg:w-auto">
-          <button type="button" onClick={() => setExportOpen(true)} className="ui-btn ui-btn-secondary w-full">
+          <button
+            type="button"
+            onClick={() => setExportOpen(true)}
+            className="ui-btn ui-btn-secondary w-full"
+          >
             Export
           </button>
           {canShare ? (
-            <button type="button" onClick={() => setShareOpen(true)} className="ui-btn ui-btn-primary w-full">
+            <button
+              type="button"
+              onClick={() => setShareOpen(true)}
+              className="ui-btn ui-btn-primary w-full"
+            >
               Share profile
             </button>
           ) : null}
@@ -61,7 +72,7 @@ export default function DashboardPage() {
       </div>
 
       <section className="ui-card">
-        <h2 className="text-lg font-semibold">Badges</h2>
+        <h2 className="section-title">Badges</h2>
         <div className="mt-3">
           <BadgesGallery badges={profile.badges} />
         </div>
@@ -69,9 +80,7 @@ export default function DashboardPage() {
 
       <DaoSection contributions={profile.daoContributions} />
 
-      {profile.trustSignals?.length ? (
-        <TrustSignalsPanel signals={profile.trustSignals} />
-      ) : null}
+      {profile.trustSignals?.length ? <TrustSignalsPanel signals={profile.trustSignals} /> : null}
 
       <ResumeTimeline
         events={profile.resumeTimeline}
@@ -79,17 +88,15 @@ export default function DashboardPage() {
       />
 
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="button"
-          onClick={() => setDrawerOpen(true)}
-          className="text-sm font-medium text-brand-700 hover:underline"
-        >
+        <button type="button" onClick={() => setDrawerOpen(true)} className="link-brand">
           View full score breakdown
         </button>
-        <a href="/dashboard/analytics" className="text-sm font-medium text-brand-700 hover:underline">
+        <a href="/dashboard/analytics" className="link-brand">
           Premium analytics
           {!isPremium ? (
-            <span className="ml-1 rounded bg-brand-100 px-1.5 py-0.5 text-xs text-brand-800">Premium</span>
+            <span className="ml-1 rounded bg-brand-100 px-1.5 py-0.5 text-xs text-brand-800">
+              Premium
+            </span>
           ) : null}
         </a>
       </div>

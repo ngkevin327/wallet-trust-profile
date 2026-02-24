@@ -4,6 +4,7 @@ import type { ProfileOwnerDto, ProfileStatusDto } from "@onchain-reputation/shar
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { CenteredFlowPage } from "../../../components/layout/centered-flow-page";
 import { api } from "../../../lib/api/client";
 import { getAccessToken } from "../../../lib/auth/token";
 
@@ -45,8 +46,8 @@ export default function IndexingPage() {
         setSlug(profile.slug);
         setError(null);
 
-        if (profile.status === "active") {
-          router.replace(`/profiles/${profile.slug}`);
+        if (profile.status === "active" && profile.slug) {
+          router.replace(`/u/${profile.slug}`);
         }
       } catch (err) {
         if (active) {
@@ -67,38 +68,32 @@ export default function IndexingPage() {
   }, [router]);
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-lg flex-col justify-center px-6 py-16">
-      <h1 className="text-2xl font-semibold text-slate-900">{STATUS_LABELS[status]}</h1>
-      <p className="mt-3 text-slate-600">{STATUS_HINTS[status]}</p>
+    <CenteredFlowPage>
+      <div className="ui-card-elevated text-center">
+        <h1 className="page-title">{STATUS_LABELS[status]}</h1>
+        <p className="page-lead">{STATUS_HINTS[status]}</p>
 
-      <div className="mt-8 flex items-center gap-3">
-        {status === "indexing" || status === "created" ? (
-          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-brand-700" />
+        <div className="mt-8 flex items-center justify-center gap-3">
+          {status === "indexing" || status === "created" ? (
+            <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-brand-600" />
+          ) : null}
+          <span className="page-eyebrow">{status}</span>
+        </div>
+
+        {slug && status === "active" ? (
+          <Link href={`/u/${slug}`} className="link-brand mt-8 inline-block">
+            View profile →
+          </Link>
         ) : null}
-        <span className="text-sm font-medium uppercase tracking-wide text-brand-700">
-          {status}
-        </span>
+
+        {status === "failed" ? (
+          <Link href="/#connect" className="ui-btn ui-btn-primary mt-8 inline-flex">
+            Try again
+          </Link>
+        ) : null}
+
+        {error ? <p className="alert alert-error mt-6">{error}</p> : null}
       </div>
-
-      {slug && status === "active" ? (
-        <Link
-          href={`/profiles/${slug}`}
-          className="mt-8 text-sm font-medium text-brand-700 hover:underline"
-        >
-          View profile →
-        </Link>
-      ) : null}
-
-      {status === "failed" ? (
-        <Link
-          href="/"
-          className="mt-8 inline-block rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white"
-        >
-          Try again
-        </Link>
-      ) : null}
-
-      {error ? <p className="mt-6 text-sm text-red-600">{error}</p> : null}
-    </main>
+    </CenteredFlowPage>
   );
 }

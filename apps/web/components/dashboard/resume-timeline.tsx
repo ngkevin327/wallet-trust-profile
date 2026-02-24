@@ -21,7 +21,7 @@ export function ResumeTimeline({ events, activitySummarized }: Props) {
 
   return (
     <section className="ui-card">
-      <h2 className="text-lg font-semibold text-slate-900">On-chain résumé</h2>
+      <h2 className="section-title">On-chain résumé</h2>
       {activitySummarized ? (
         <p className="mt-1 text-sm text-amber-700">
           High-volume wallet — timeline shows the most recent indexed events.
@@ -38,7 +38,7 @@ export function ResumeTimeline({ events, activitySummarized }: Props) {
                 href={event.explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-brand-700 hover:underline"
+                className="link-brand text-xs"
               >
                 View transaction
               </a>
@@ -50,7 +50,7 @@ export function ResumeTimeline({ events, activitySummarized }: Props) {
         <button
           type="button"
           onClick={() => setShowAll(true)}
-          className="mt-4 text-sm font-medium text-brand-700 hover:underline"
+          className="link-brand mt-4 inline-block text-sm"
         >
           Show more ({events.length - PAGE} remaining)
         </button>

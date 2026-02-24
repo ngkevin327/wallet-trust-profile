@@ -45,12 +45,12 @@ export function SlugInput({ value, onChange, currentSlug }: Props) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700" htmlFor="profile-slug">
+      <label className="label-field" htmlFor="profile-slug">
         Vanity slug
       </label>
       <input
         id="profile-slug"
-        className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+        className="input-field"
         value={value}
         onChange={(e) => onChange(e.target.value.toLowerCase())}
         placeholder="your-name"

@@ -17,7 +17,7 @@ export function VisibilityToggle({ value, onChange }: Props) {
 
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-slate-700">Profile visibility</legend>
+      <legend className="label-field">Profile visibility</legend>
       <div className="mt-2 space-y-2">
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -38,7 +38,7 @@ export function VisibilityToggle({ value, onChange }: Props) {
           Private — returns 404 on public routes
         </label>
       </div>
-      <a href="/faq" className="mt-2 inline-block text-xs text-brand-700 hover:underline">
+      <a href="/faq" className="link-brand mt-2 inline-block text-xs">
         Learn more in FAQ
       </a>
     </fieldset>

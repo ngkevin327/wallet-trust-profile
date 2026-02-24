@@ -1,8 +1,8 @@
 "use client";
 
 import type { ProfileOwnerDto } from "@onchain-reputation/shared";
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { PageHeader } from "../../../components/layout/page-header";
 import { SlugInput } from "../../../components/settings/slug-input";
 import { VisibilityToggle } from "../../../components/settings/visibility-toggle";
 import { api } from "../../../lib/api/client";
@@ -34,7 +34,10 @@ export default function ProfileSettingsPage() {
     if (!profile) {
       return;
     }
-    if (slug !== profile.slug && !window.confirm("Changing your slug will break existing links. Continue?")) {
+    if (
+      slug !== profile.slug &&
+      !window.confirm("Changing your slug will break existing links. Continue?")
+    ) {
       return;
     }
     setSaving(true);
@@ -42,9 +45,7 @@ export default function ProfileSettingsPage() {
     try {
       await updateProfile({ displayName, slug, visibility });
       setMessage("Profile updated");
-      setProfile((prev) =>
-        prev ? { ...prev, displayName, slug, visibility } : prev,
-      );
+      setProfile((prev) => (prev ? { ...prev, displayName, slug, visibility } : prev));
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Update failed");
     } finally {
@@ -54,28 +55,30 @@ export default function ProfileSettingsPage() {
 
   if (!profile) {
     return (
-      <main className="mx-auto max-w-lg px-6 py-12">
+      <div className="page-content">
         <p className="text-slate-500">Loading settings…</p>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto max-w-lg px-6 py-12">
-      <Link href="/dashboard" className="text-sm text-brand-700 hover:underline">
-        ← Dashboard
-      </Link>
-      <h1 className="mt-6 text-2xl font-semibold">Profile settings</h1>
+    <div className="page-content">
+      <PageHeader
+        title="Profile settings"
+        lead="Display name, public URL slug, and visibility."
+        backHref="/dashboard"
+        backLabel="← Dashboard"
+      />
 
-      <div className="mt-6 space-y-6">
+      <div className="ui-card space-y-6">
         <div>
-          <label className="block text-sm font-medium text-slate-700" htmlFor="display-name">
+          <label className="label-field" htmlFor="display-name">
             Display name
           </label>
           <input
             id="display-name"
             maxLength={128}
-            className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
+            className="input-field"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
           />
@@ -94,8 +97,12 @@ export default function ProfileSettingsPage() {
           {saving ? "Saving…" : "Save changes"}
         </button>
 
-        {message ? <p className="text-sm text-slate-600" role="status">{message}</p> : null}
+        {message ? (
+          <p className="alert alert-info" role="status">
+            {message}
+          </p>
+        ) : null}
       </div>
-    </main>
+    </div>
   );
 }

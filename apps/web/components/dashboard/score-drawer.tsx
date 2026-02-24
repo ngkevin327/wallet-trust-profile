@@ -53,10 +53,10 @@ export function ScoreDrawer({ open, onClose }: Props) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="score-drawer-title"
-        className="h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-xl"
+        className="h-full w-full max-w-md overflow-y-auto border-l border-slate-200/80 bg-white p-6 shadow-glow"
       >
         <div className="flex items-center justify-between">
-          <h2 id="score-drawer-title" className="text-lg font-semibold">
+          <h2 id="score-drawer-title" className="section-title">
             Score breakdown
           </h2>
           <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-800">
@@ -67,10 +67,10 @@ export function ScoreDrawer({ open, onClose }: Props) {
         {error ? <p className="mt-6 text-sm text-red-600">{error}</p> : null}
         {data ? (
           <div className="mt-6 space-y-4">
-            <p className="text-3xl font-bold text-brand-700">{data.reputationIndex}</p>
+            <p className="font-display text-3xl font-bold text-brand-800">{data.reputationIndex}</p>
             <ul className="space-y-3">
               {data.dimensions.map((dim) => (
-                <li key={dim.key} className="rounded-lg border border-slate-200 p-3">
+                <li key={dim.key} className="ui-card py-3">
                   <p className="font-medium capitalize">{dim.key.replace(/_/g, " ")}</p>
                   <p className="text-sm text-slate-600">
                     Score {dim.score} · weight {(dim.weight * 100).toFixed(0)}%
@@ -81,10 +81,7 @@ export function ScoreDrawer({ open, onClose }: Props) {
             <p className="text-xs text-slate-400">
               Version {data.scoringVersion} · inputs {data.inputsHash.slice(0, 12)}…
             </p>
-            <a
-              href="/documentation/scoring-methodology"
-              className="text-sm text-brand-700 hover:underline"
-            >
+            <a href="/documentation/scoring-methodology" className="link-brand">
               Read methodology
             </a>
           </div>

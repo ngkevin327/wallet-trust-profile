@@ -35,7 +35,7 @@ export function ScoreCards({ dimensions, onSelectDimension }: Props) {
             key={key}
             type="button"
             onClick={() => onSelectDimension?.(key)}
-            className="ui-card text-left transition hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            className="ui-card text-left transition hover:border-brand-300 hover:shadow-card focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-2"
             aria-label={`${label.title}: ${score} out of 100`}
           >
             <div className="flex items-start gap-1">

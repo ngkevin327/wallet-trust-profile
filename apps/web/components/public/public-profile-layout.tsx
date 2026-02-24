@@ -25,7 +25,7 @@ export function PublicProfileLayout({ profile, children, footer }: Props) {
   return (
     <div className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
+        <div className="page-container flex items-center justify-between py-4">
           <Link
             href="/"
             className="font-display text-sm font-bold tracking-tight text-slate-900 hover:text-brand-700"
@@ -42,7 +42,7 @@ export function PublicProfileLayout({ profile, children, footer }: Props) {
       </header>
 
       <div className="border-b border-slate-200/60 bg-gradient-to-br from-brand-50 via-white to-cyan-50/40">
-        <div className="mx-auto max-w-3xl px-6 py-10">
+        <div className="page-content py-10">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
             <div
               className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 to-brand-800 font-display text-2xl font-bold text-white shadow-lg ring-4 ring-white"
@@ -63,7 +63,7 @@ export function PublicProfileLayout({ profile, children, footer }: Props) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-3xl px-6 py-10">{children}</main>
+      <main className="page-content py-10">{children}</main>
 
       {footer}
     </div>

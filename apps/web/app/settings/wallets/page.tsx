@@ -4,6 +4,7 @@ import type { WalletDto } from "@onchain-reputation/shared";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
+import { PageHeader } from "../../../components/layout/page-header";
 import { api, ApiError } from "../../../lib/api/client";
 import { signInWithEthereum } from "../../../lib/auth/siwe";
 import { getAccessToken } from "../../../lib/auth/token";
@@ -14,7 +15,7 @@ export default function WalletSettingsPage() {
   const { address, chainId } = useAccount();
   const { signMessageAsync } = useSignMessage();
   const [wallets, setWallets] = useState<WalletDto[]>([]);
-  const [tier, setTier] = useState<"free" | "premium">("free");
+  const [tier] = useState<"free" | "premium">("free");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,32 +59,32 @@ export default function WalletSettingsPage() {
   };
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
-      <Link href="/" className="text-sm text-brand-700 hover:underline">
-        ← Back
-      </Link>
-      <h1 className="mt-6 text-2xl font-semibold text-slate-900">Linked wallets</h1>
-      <p className="mt-2 text-slate-600">
-        Free accounts can link {FREE_WALLET_LIMIT} wallet. Premium supports up to 3.
-      </p>
+    <div className="page-content">
+      <PageHeader
+        title="Linked wallets"
+        lead={`Free accounts can link ${FREE_WALLET_LIMIT} wallet. Premium supports up to 3.`}
+        backHref="/dashboard"
+        backLabel="← Dashboard"
+      />
 
       {atLimit ? (
-        <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          You have reached your wallet limit ({limit}). Upgrade to premium to link more.
+        <p className="alert alert-warning mb-6">
+          You have reached your wallet limit ({limit}).{" "}
+          <Link href="/pricing" className="link-brand">
+            Upgrade to premium
+          </Link>{" "}
+          to link more.
         </p>
       ) : null}
 
       {loading ? (
-        <p className="mt-8 text-slate-500">Loading wallets…</p>
+        <p className="text-slate-500">Loading wallets…</p>
       ) : (
-        <ul className="mt-8 space-y-3">
+        <ul className="space-y-3">
           {wallets.map((w) => (
-            <li
-              key={w.id}
-              className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3"
-            >
+            <li key={w.id} className="list-row">
               <div>
-                <p className="font-mono text-sm">{w.address}</p>
+                <p className="font-mono text-sm text-slate-900">{w.address}</p>
                 <p className="text-xs text-slate-500">
                   {w.chainScope.join(", ")}
                   {w.isPrimary ? " · primary" : ""}
@@ -92,22 +93,18 @@ export default function WalletSettingsPage() {
             </li>
           ))}
           {wallets.length === 0 ? (
-            <li className="text-sm text-slate-500">No wallets linked yet.</li>
+            <li className="ui-card text-sm text-slate-500">No wallets linked yet.</li>
           ) : null}
         </ul>
       )}
 
       {!atLimit && address ? (
-        <button
-          type="button"
-          onClick={handleLinkCurrent}
-          className="mt-6 rounded-lg bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-500"
-        >
+        <button type="button" onClick={handleLinkCurrent} className="ui-btn ui-btn-primary mt-6">
           Link connected wallet
         </button>
       ) : null}
 
-      {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
-    </main>
+      {error ? <p className="alert alert-error mt-4">{error}</p> : null}
+    </div>
   );
 }

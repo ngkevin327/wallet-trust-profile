@@ -60,10 +60,11 @@ export function ExportModal({ open, onClose, isPremium }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg" role="dialog" aria-modal="true">
+      <div className="ui-card-elevated w-full max-w-md shadow-glow" role="dialog" aria-modal="true">
         <h3 className="text-lg font-semibold">Export reputation</h3>
         <p className="mt-2 text-sm text-slate-600">
-          JSON includes scores, badges, and a verification link recipients can validate without an account.
+          JSON includes scores, badges, and a verification link recipients can validate without an
+          account.
         </p>
         {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
         <div className="mt-4 flex flex-col gap-2">
@@ -88,7 +89,7 @@ export function ExportModal({ open, onClose, isPremium }: Props) {
           <div className="mt-4 rounded-lg bg-slate-50 p-3 text-sm">
             <p className="font-medium text-slate-700">Verification link</p>
             <p className="mt-1 break-all font-mono text-xs text-slate-600">{verifyLink}</p>
-            <button type="button" onClick={() => void copyVerify()} className="mt-2 text-brand-700 hover:underline">
+            <button type="button" onClick={() => void copyVerify()} className="link-brand mt-2">
               Copy link
             </button>
           </div>

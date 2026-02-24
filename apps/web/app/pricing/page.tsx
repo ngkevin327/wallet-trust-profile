@@ -7,6 +7,8 @@ import { ENTITLEMENT_FEATURES } from "@onchain-reputation/shared";
 import { createCheckoutSession, getSubscriptionStatus } from "../../lib/api/billing";
 import { ApiError } from "../../lib/api/client";
 import { getAccessToken } from "../../lib/auth/token";
+import { MarketingPage } from "../../components/layout/marketing-page";
+import { PageHeader } from "../../components/layout/page-header";
 
 const FEATURE_LABELS: Record<string, string> = {
   multi_wallet: "Multiple linked wallets",
@@ -46,36 +48,40 @@ export default function PricingPage() {
   const success = searchParams.get("success") === "1";
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-semibold text-slate-900">Pricing</h1>
-      <p className="mt-2 text-slate-600">Free to start. Premium unlocks exports, refresh, and analytics.</p>
+    <MarketingPage width="content">
+      <PageHeader
+        title="Pricing"
+        lead="Free to start. Premium unlocks exports, refresh, and analytics."
+        backHref="/"
+        backLabel="← Home"
+      />
 
       {success ? (
-        <p className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+        <p className="alert alert-success mb-6">
           Payment received — your plan should update within a minute. Current plan:{" "}
           {plan ?? "checking…"}
         </p>
       ) : null}
 
-      {error ? <p className="mt-4 text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="alert alert-error mb-6">{error}</p> : null}
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         <section className="ui-card">
-          <h2 className="text-xl font-semibold">Free</h2>
-          <p className="mt-2 text-3xl font-bold">$0</p>
+          <h2 className="font-display text-xl font-semibold text-slate-900">Free</h2>
+          <p className="mt-2 font-display text-3xl font-bold text-slate-900">$0</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-600">
             <li>1 linked wallet</li>
             <li>Public profile & JSON export</li>
             <li>Basic reputation index</li>
           </ul>
           <Link href="/dashboard" className="ui-btn ui-btn-secondary mt-6 inline-flex">
-            Current plan
+            Go to dashboard
           </Link>
         </section>
 
-        <section className="ui-card border-brand-500">
-          <h2 className="text-xl font-semibold text-brand-700">Premium</h2>
-          <p className="mt-2 text-3xl font-bold">$12/mo</p>
+        <section className="ui-card-highlight">
+          <h2 className="font-display text-xl font-semibold text-brand-800">Premium</h2>
+          <p className="mt-2 font-display text-3xl font-bold text-slate-900">$12/mo</p>
           <ul className="mt-4 space-y-2 text-sm text-slate-600">
             {ENTITLEMENT_FEATURES.map((f) => (
               <li key={f}>{FEATURE_LABELS[f] ?? f}</li>
@@ -94,15 +100,15 @@ export default function PricingPage() {
 
       <p className="mt-10 text-center text-xs text-slate-500">
         By upgrading you agree to our{" "}
-        <Link href="/legal/terms" className="text-brand-700 hover:underline">
+        <Link href="/legal/terms" className="link-brand">
           Terms
         </Link>{" "}
         and{" "}
-        <Link href="/legal/privacy" className="text-brand-700 hover:underline">
+        <Link href="/legal/privacy" className="link-brand">
           Privacy Policy
         </Link>
         .
       </p>
-    </main>
+    </MarketingPage>
   );
 }

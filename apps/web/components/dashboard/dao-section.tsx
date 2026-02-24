@@ -18,7 +18,7 @@ export function DaoSection({ contributions }: Props) {
 
   return (
     <section className="ui-card">
-      <h2 className="text-lg font-semibold text-slate-900">DAO contributions</h2>
+      <h2 className="section-title">DAO contributions</h2>
       <p className="mt-1 text-sm text-slate-500">
         Top treasury inflows from the DAO registry. Confidence reflects attribution strength.
       </p>

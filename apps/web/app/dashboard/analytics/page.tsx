@@ -42,7 +42,7 @@ export default function AnalyticsPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold text-slate-900">
+        <h1 className="page-title">
           Premium analytics
           {!isPremium ? (
             <span className="ml-2 rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-800">
@@ -50,7 +50,7 @@ export default function AnalyticsPage() {
             </span>
           ) : null}
         </h1>
-        <a href="/dashboard" className="text-sm text-brand-700 hover:underline">
+        <a href="/dashboard" className="link-brand">
           Back to dashboard
         </a>
       </div>
@@ -68,7 +68,7 @@ export default function AnalyticsPage() {
         <>
           {profile.privateMetrics ? (
             <section className="ui-card">
-              <h2 className="text-lg font-semibold">Private sub-scores</h2>
+              <h2 className="section-title">Private sub-scores</h2>
               <ul className="mt-4 space-y-3">
                 {profile.privateMetrics.dimensions.map((d) => (
                   <li key={d.key} className="flex justify-between text-sm">
@@ -81,7 +81,7 @@ export default function AnalyticsPage() {
           ) : null}
 
           <section className="ui-card">
-            <h2 className="text-lg font-semibold">Reputation trend (90 days)</h2>
+            <h2 className="section-title">Reputation trend (90 days)</h2>
             <div className="mt-4">
               <ScoreTrendChart points={history} />
             </div>

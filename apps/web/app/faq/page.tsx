@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { SiteFooter } from "../../components/layout/footer";
+import { MarketingPage } from "../../components/layout/marketing-page";
+import { PageHeader } from "../../components/layout/page-header";
 
 const faqs = [
   {
@@ -30,37 +31,33 @@ const faqs = [
 
 export default function FaqPage() {
   return (
-    <>
-      <main className="mx-auto max-w-2xl px-6 py-12">
-        <Link href="/" className="text-sm text-brand-700 hover:underline">
-          ← Home
+    <MarketingPage>
+      <PageHeader
+        title="FAQ"
+        lead="Wallet safety, scoring transparency, and privacy controls for Onchain Reputation."
+        backHref="/"
+        backLabel="← Home"
+      />
+
+      <div className="space-y-6">
+        {faqs.map((item) => (
+          <section key={item.q} className="ui-card">
+            <h2 className="section-title">{item.q}</h2>
+            <p className="mt-2 text-slate-600">{item.a}</p>
+          </section>
+        ))}
+      </div>
+
+      <p className="mt-10 text-sm text-slate-500">
+        Full methodology:{" "}
+        <Link href="/documentation/scoring-methodology" className="link-brand">
+          scoring methodology
         </Link>
-        <h1 className="mt-6 text-3xl font-semibold">FAQ</h1>
-        <p className="mt-2 text-slate-600">
-          Wallet safety, scoring transparency, and privacy controls for Onchain Reputation.
-        </p>
-
-        <div className="mt-10 space-y-8">
-          {faqs.map((item) => (
-            <section key={item.q} className="space-y-2">
-              <h2 className="text-lg font-medium text-slate-900">{item.q}</h2>
-              <p className="text-slate-600">{item.a}</p>
-            </section>
-          ))}
-        </div>
-
-        <p className="mt-10 text-sm text-slate-500">
-          Full methodology:{" "}
-          <Link href="/documentation/scoring-methodology" className="text-brand-700 hover:underline">
-            scoring methodology
-          </Link>
-          {" · "}
-          <Link href="/documentation/trust-signals" className="text-brand-700 hover:underline">
-            trust signals
-          </Link>
-        </p>
-      </main>
-      <SiteFooter />
-    </>
+        {" · "}
+        <Link href="/documentation/trust-signals" className="link-brand">
+          trust signals
+        </Link>
+      </p>
+    </MarketingPage>
   );
 }

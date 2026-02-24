@@ -29,7 +29,7 @@ export function TrustSignalsPanel({ signals, variant = "owner" }: Props) {
 
   return (
     <section className="mt-8">
-      <h2 className="text-lg font-medium text-slate-900">Trust signals</h2>
+      <h2 className="section-title">Trust signals</h2>
       <p className="mt-1 text-sm text-slate-600">
         {variant === "public"
           ? "Neutral, explainable indicators derived from indexed on-chain activity. Use alongside other hiring signals."
@@ -67,7 +67,7 @@ export function TrustSignalsPanel({ signals, variant = "owner" }: Props) {
         <button
           type="button"
           onClick={() => setExpandedHigh(true)}
-          className="mt-3 text-sm font-medium text-brand-700 hover:underline"
+          className="link-brand mt-3 inline-block"
         >
           View details ({hiddenHighCount} additional signal
           {hiddenHighCount === 1 ? "" : "s"})

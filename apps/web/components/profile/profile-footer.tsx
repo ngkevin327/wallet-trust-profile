@@ -48,7 +48,7 @@ export function ProfileFooter({
   return (
     <footer className="mt-10 border-t border-slate-200 pt-4 text-center text-xs text-slate-500">
       <p>{parts.join(" · ")}</p>
-      <Link href="/#faq" className="mt-1 inline-block text-brand-700 hover:underline">
+      <Link href="/faq" className="link-brand mt-1 inline-block">
         How scores work
       </Link>
     </footer>

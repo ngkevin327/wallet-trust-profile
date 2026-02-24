@@ -45,7 +45,7 @@ export function PublicScoreSummary({ profile }: Props) {
 
       {dimensions ? (
         <section>
-          <h2 className="font-display text-lg font-semibold text-slate-900">Dimension summary</h2>
+          <h2 className="section-title">Dimension summary</h2>
           <p className="mt-1 text-sm text-slate-500">
             Explainable breakdown of indexed onchain activity
           </p>
@@ -76,7 +76,7 @@ export function PublicScoreSummary({ profile }: Props) {
 
       {profile.badges.length > 0 ? (
         <section className="ui-card-elevated">
-          <h2 className="font-display text-lg font-semibold">Badges</h2>
+          <h2 className="section-title">Badges</h2>
           <p className="mt-1 text-sm text-slate-500">Earned from verifiable onchain milestones</p>
           <div className="mt-4">
             <BadgesGallery badges={profile.badges} />
