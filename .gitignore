@@ -33,6 +33,7 @@ Thumbs.db
 # Test / coverage
 coverage/
 .nyc_output/
+**/test-results/
 
 # Terraform
 infra/terraform/.terraform/

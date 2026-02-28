@@ -16,7 +16,7 @@ const nodeGlobals = {
 export default [
   ...base,
   {
-    files: ["scripts/**/*.mjs"],
+    files: ["scripts/**/*.mjs", "scripts/lib/**/*.mjs"],
     languageOptions: { globals: nodeGlobals },
   },
 ];
