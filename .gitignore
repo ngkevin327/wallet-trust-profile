@@ -47,9 +47,11 @@ docker-data/
 
 # Planning and local artifacts (not part of the product repo)
 docs/
-*.txt
 prompts/
 plans/
+
+# Local scratch (non-product tooling and notes)
+temp/
 
 # Misc
 *.pem
