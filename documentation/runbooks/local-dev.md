@@ -122,6 +122,6 @@ pnpm setup:local
 
 ## Related docs
 
-- Product PRD acceptance criteria: `docs/02-product-requirements-document.md` §19 (local copy, gitignored)
+- Product PRD acceptance criteria: `temp/docs/02-product-requirements-document.md` §19 (local copy, not in repo)
 - MVP launch checklist: `documentation/launch/mvp-checklist.md`
-- MVP gap report: `documentation/launch/mvp-gap-report.md`
+- MVP gap report and local validation notes: `temp/launch/mvp-gap-report.md`, `temp/launch/mvp-local-validation-report.md` (local, not in repo)

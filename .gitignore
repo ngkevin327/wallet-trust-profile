@@ -46,11 +46,10 @@ infra/terraform/terraform.tfvars
 docker-data/
 
 # Planning and local artifacts (not part of the product repo)
-docs/
 prompts/
 plans/
 
-# Local scratch (non-product tooling and notes)
+# Local scratch (non-product tooling, planning docs, validation notes)
 temp/
 
 # Misc
