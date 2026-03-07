@@ -24,7 +24,7 @@ export function PublicProfileLayout({ profile, children, footer }: Props) {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-md">
         <div className="page-container flex items-center justify-between py-4">
           <Link
             href="/"

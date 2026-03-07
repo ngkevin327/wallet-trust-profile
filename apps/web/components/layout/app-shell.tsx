@@ -23,7 +23,7 @@ export function AppShell({ children, title = "Dashboard" }: Props) {
       </a>
       <DashboardNav />
       <div className="flex flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-6 py-4 backdrop-blur-md">
+        <header className="sticky top-0 z-40 flex shrink-0 items-center justify-between border-b border-slate-200/80 bg-white/95 px-6 py-4 shadow-sm backdrop-blur-md">
           <h1 className="font-display text-lg font-semibold text-slate-900">{title}</h1>
           {address ? (
             <p className="rounded-lg bg-slate-100 px-3 py-1.5 font-mono text-sm text-slate-600">
