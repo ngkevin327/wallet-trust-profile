@@ -16,10 +16,15 @@ export function ConnectWalletButton() {
   const [error, setError] = useState<string | null>(null);
 
   const handleConnect = () => {
+    setError(null);
     const connector = connectors[0];
-    if (connector) {
-      connect({ connector });
+    if (!connector) {
+      setError(
+        "No wallet detected. Install a browser wallet (e.g. MetaMask) or set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID for mobile QR connect.",
+      );
+      return;
     }
+    connect({ connector });
   };
 
   const handleSignIn = async () => {
@@ -46,15 +51,18 @@ export function ConnectWalletButton() {
 
   if (!isConnected) {
     return (
-      <button
-        type="button"
-        onClick={handleConnect}
-        disabled={isConnecting}
-        className="ui-btn ui-btn-primary"
-        aria-label="Connect wallet"
-      >
-        {isConnecting ? "Connecting…" : "Connect wallet"}
-      </button>
+      <div className="flex flex-col gap-2">
+        <button
+          type="button"
+          onClick={handleConnect}
+          disabled={isConnecting}
+          className="ui-btn ui-btn-primary"
+          aria-label="Connect wallet"
+        >
+          {isConnecting ? "Connecting…" : "Connect wallet"}
+        </button>
+        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      </div>
     );
   }
 
