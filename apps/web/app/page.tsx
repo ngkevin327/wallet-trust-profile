@@ -1,6 +1,7 @@
 import { LandingHero } from "../components/landing/hero";
 import { Personas } from "../components/landing/personas";
 import { ValueProps } from "../components/landing/value-props";
+import { DataAccessSection } from "../components/marketing/data-access-section";
 import { SiteFooter } from "../components/layout/footer";
 import { SiteHeader } from "../components/layout/site-header";
 
@@ -10,6 +11,11 @@ export default function HomePage() {
       <SiteHeader variant="transparent" />
       <LandingHero />
       <ValueProps />
+      <section className="border-t border-slate-200 bg-white py-16">
+        <div className="page-container">
+          <DataAccessSection compact />
+        </div>
+      </section>
       <Personas />
       <section className="border-t border-slate-200 bg-gradient-to-br from-brand-900 via-brand-800 to-slate-900 py-16 text-white">
         <div className="mx-auto max-w-3xl px-6 text-center">

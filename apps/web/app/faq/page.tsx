@@ -1,8 +1,17 @@
 import Link from "next/link";
+import { DataAccessSection } from "../../components/marketing/data-access-section";
 import { MarketingPage } from "../../components/layout/marketing-page";
 import { PageHeader } from "../../components/layout/page-header";
 
 const faqs = [
+  {
+    q: "What data do you access?",
+    a: "Only public on-chain activity for wallets you link, plus profile and billing settings you provide. We never read seed phrases, private keys, email inboxes, or off-chain accounts. See the breakdown on this page below.",
+  },
+  {
+    q: "Can I enter my wallet address manually?",
+    a: "Yes. On the home page or Settings → Wallets, paste your public address (0x…), connect the wallet app that controls it, and sign once to prove ownership. We still never ask for your seed phrase.",
+  },
   {
     q: "Do you custody funds?",
     a: "No. Sign-in uses SIWE (Sign-In With Ethereum) for authentication only. Indexing is read-only via public RPC data.",
@@ -38,6 +47,10 @@ export default function FaqPage() {
         backHref="/"
         backLabel="← Home"
       />
+
+      <div className="mb-10">
+        <DataAccessSection />
+      </div>
 
       <div className="space-y-6">
         {faqs.map((item) => (
