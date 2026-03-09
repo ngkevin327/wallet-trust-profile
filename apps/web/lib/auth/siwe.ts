@@ -21,42 +21,55 @@ export function mapWalletError(error: unknown): string {
   return message || "Something went wrong during sign-in.";
 }
 
+export async function buildAndSignSiwe(params: {
+  address: string;
+  chainId: number;
+  statement: string;
+  signMessageAsync: (args: { message: string }) => Promise<string>;
+}): Promise<{ message: string; signature: string }> {
+  const nonceRes = await fetch(`${API_BASE}${API_ROUTES.auth.nonce}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ address: params.address, chainId: params.chainId }),
+  });
+
+  if (!nonceRes.ok) {
+    throw new Error("Failed to fetch SIWE nonce");
+  }
+
+  const nonceData = await nonceRes.json();
+
+  const siwe = new SiweMessage({
+    domain: process.env.NEXT_PUBLIC_SIWE_DOMAIN ?? nonceData.domain,
+    address: params.address,
+    statement: params.statement,
+    uri: nonceData.uri,
+    version: "1",
+    chainId: params.chainId,
+    nonce: nonceData.nonce,
+    expirationTime: nonceData.expirationTime,
+  });
+
+  const message = siwe.prepareMessage();
+  const signature = await params.signMessageAsync({ message });
+  return { message, signature };
+}
+
 export async function signInWithEthereum(params: {
   address: string;
   chainId: number;
   signMessageAsync: (args: { message: string }) => Promise<string>;
 }): Promise<{ userId: string; accessToken: string }> {
   try {
-    const nonceRes = await fetch(`${API_BASE}${API_ROUTES.auth.nonce}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ address: params.address, chainId: params.chainId }),
-    });
-
-    if (!nonceRes.ok) {
-      throw new Error("Failed to fetch SIWE nonce");
-    }
-
-    const nonceData = await nonceRes.json();
-
-    const message = new SiweMessage({
-      domain: process.env.NEXT_PUBLIC_SIWE_DOMAIN ?? nonceData.domain,
-      address: params.address,
+    const { message, signature } = await buildAndSignSiwe({
+      ...params,
       statement: "Sign in to Onchain Reputation",
-      uri: nonceData.uri,
-      version: "1",
-      chainId: params.chainId,
-      nonce: nonceData.nonce,
-      expirationTime: nonceData.expirationTime,
     });
-
-    const prepared = message.prepareMessage();
-    const signature = await params.signMessageAsync({ message: prepared });
 
     const verifyRes = await fetch(`${API_BASE}${API_ROUTES.auth.verify}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: prepared, signature }),
+      body: JSON.stringify({ message, signature }),
     });
 
     if (!verifyRes.ok) {

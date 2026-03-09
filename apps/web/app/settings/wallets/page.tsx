@@ -3,17 +3,14 @@
 import type { WalletDto } from "@onchain-reputation/shared";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
 import { PageHeader } from "../../../components/layout/page-header";
+import { LinkWalletForm } from "../../../components/wallets/link-wallet-form";
 import { api, ApiError } from "../../../lib/api/client";
-import { signInWithEthereum } from "../../../lib/auth/siwe";
 import { getAccessToken } from "../../../lib/auth/token";
 
 const FREE_WALLET_LIMIT = 1;
 
 export default function WalletSettingsPage() {
-  const { address, chainId } = useAccount();
-  const { signMessageAsync } = useSignMessage();
   const [wallets, setWallets] = useState<WalletDto[]>([]);
   const [tier] = useState<"free" | "premium">("free");
   const [loading, setLoading] = useState(true);
@@ -43,20 +40,6 @@ export default function WalletSettingsPage() {
 
   const limit = tier === "premium" ? 3 : FREE_WALLET_LIMIT;
   const atLimit = wallets.length >= limit;
-
-  const handleLinkCurrent = async () => {
-    if (!address || !chainId) {
-      setError("Connect a wallet first");
-      return;
-    }
-    setError(null);
-    try {
-      await signInWithEthereum({ address, chainId, signMessageAsync });
-      await loadWallets();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to link wallet");
-    }
-  };
 
   return (
     <div className="page-content">
@@ -98,10 +81,17 @@ export default function WalletSettingsPage() {
         </ul>
       )}
 
-      {!atLimit && address ? (
-        <button type="button" onClick={handleLinkCurrent} className="ui-btn ui-btn-primary mt-6">
-          Link connected wallet
-        </button>
+      {!atLimit ? (
+        <section className="ui-card mt-8">
+          <h2 className="section-title">Add a public address</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Enter any Ethereum address you control, then sign once to link it. Read-only indexing
+            only — no custody.
+          </p>
+          <div className="mt-4">
+            <LinkWalletForm mode="link" disabled={atLimit} onSuccess={() => void loadWallets()} />
+          </div>
+        </section>
       ) : null}
 
       {error ? <p className="alert alert-error mt-4">{error}</p> : null}

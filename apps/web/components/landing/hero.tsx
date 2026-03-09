@@ -1,8 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import { ConnectWalletButton } from "../connect-wallet-button";
+import { useRouter } from "next/navigation";
 import { ScoreDisplay } from "../ui/score-display";
+import { LinkWalletForm } from "../wallets/link-wallet-form";
 
 export function LandingHero() {
+  const router = useRouter();
   return (
     <section className="mesh-hero relative overflow-hidden border-b border-slate-200/60">
       <div className="pointer-events-none absolute -right-24 top-20 h-72 w-72 rounded-full bg-brand-500/10 blur-3xl" />
@@ -23,12 +27,9 @@ export function LandingHero() {
             Turn governance votes, DAO contributions, and payment patterns into a shareable trust
             profile — without custody or manual résumés.
           </p>
-          <div
-            id="connect"
-            className="mt-10 flex flex-col items-center gap-4 sm:flex-row md:justify-start"
-          >
-            <ConnectWalletButton />
-            <Link href="/how-it-works" className="ui-btn ui-btn-secondary">
+          <div id="connect" className="mt-10 max-w-lg">
+            <LinkWalletForm mode="sign-in" onSuccess={() => router.push("/onboarding/indexing")} />
+            <Link href="/how-it-works" className="ui-btn ui-btn-secondary mt-4 inline-flex">
               How it works
             </Link>
           </div>
