@@ -66,8 +66,8 @@ Without RPC keys the **worker starts** but onchain indexing jobs will not fetch 
 | `API_MOCK_MODE`                        | `true` in `.env.example`  | Mock public profile payloads in dev |
 | `PORT`                                 | `3001`                    | API listen port                     |
 | `NEXT_PUBLIC_API_URL`                  | `http://localhost:3001`   | Web → API                           |
-| `NEXT_PUBLIC_TEST_MODE`                | unset                     | Skip wallet UI in Playwright        |
-| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | empty                     | WalletConnect (connect flow)        |
+| `NEXT_PUBLIC_TEST_MODE`                | unset                     | Bypass `/dashboard` auth (local UI) |
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | empty                     | WalletConnect QR (mobile wallets)   |
 | `STRIPE_SECRET_KEY`                    | empty                     | Premium checkout                    |
 | `STRIPE_WEBHOOK_SECRET`                | empty                     | Billing webhooks                    |
 | `STRIPE_PREMIUM_PRICE_ID`              | empty                     | Premium SKU                         |
@@ -75,6 +75,25 @@ Without RPC keys the **worker starts** but onchain indexing jobs will not fetch 
 | `ADMIN_API_KEY`                        | `dev-admin-key-change-me` | Admin API routes                    |
 | `RATE_LIMIT_ANONYMOUS_PER_MIN`         | `60`                      | Anonymous rate limit                |
 | `REPO_ROOT`                            | set by `pnpm dev`         | Worker config path resolution       |
+
+## Wallet connect and authentication
+
+**What needs auth:** Only owner routes — `/dashboard`, `/settings/*`, `/onboarding/*`. Public marketing pages and `/u/[slug]` profiles work **without** signing in.
+
+**Connect flow (landing `/#connect`):**
+
+1. **Connect wallet** — opens your browser extension wallet (MetaMask, Rabby, Brave, etc.).
+2. **Sign in** — SIWE signature; API returns a JWT stored in the `access_token` cookie.
+3. Redirect to `/onboarding/indexing`, then your dashboard.
+
+**If Connect wallet does nothing:**
+
+- Install a browser wallet extension, **or**
+- Add a [WalletConnect Cloud](https://cloud.walletconnect.com) project id to `.env`:
+  `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_project_id`
+- Restart `pnpm dev` after changing `.env`.
+
+**Browse dashboard without a wallet (local only):** set `NEXT_PUBLIC_TEST_MODE=true` in `.env`, restart dev, then open `/dashboard`. Data APIs still require a real sign-in for `/v1/me/*` unless you mock them separately.
 
 ## How to verify working local product
 
